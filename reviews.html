@@ -7,15 +7,18 @@
   <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
   <style>
     :root {
-      --bg: #1a1b1f;
-      --bg-soft: #23252b;
-      --line: rgba(255, 255, 255, 0.1);
-      --text: #f3f4f7;
-      --muted: #a1a6b3;
-      --good: #7ee2a8;
-      --bad: #ff8f8f;
-      --mid: #ffd889;
-      --accent: #c5c9d3;
+      --bg: #121317;
+      --bg-soft: #1a1d24;
+      --glass: rgba(255, 255, 255, 0.06);
+      --line: rgba(255, 255, 255, 0.12);
+      --line-soft: rgba(255, 255, 255, 0.08);
+      --text: #f2f4f8;
+      --muted: #a8afbf;
+      --good: #89e3b0;
+      --bad: #ff9b9b;
+      --mid: #f1d39a;
+      --accent: #cfd5e3;
+      --shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
       --safe-top: 0px;
       --safe-right: 0px;
       --safe-bottom: 0px;
@@ -31,9 +34,12 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      background: radial-gradient(1000px 500px at -10% -10%, rgba(255, 255, 255, 0.07), transparent 55%), var(--bg);
       color: var(--text);
       font-family: "SF Pro Text", "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(980px 420px at -15% -10%, rgba(255, 255, 255, 0.12), transparent 55%),
+        radial-gradient(720px 360px at 120% -10%, rgba(255, 255, 255, 0.08), transparent 50%),
+        linear-gradient(165deg, #0f1014 0%, #151821 44%, #1a1f2a 100%);
     }
 
     body {
@@ -51,11 +57,24 @@
     }
 
     .head {
+      position: relative;
+      overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 14px;
-      background: linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.15));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+    }
+
+    .head::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%);
+      pointer-events: none;
     }
 
     .title {
@@ -80,22 +99,49 @@
     }
 
     .card {
-      border: 1px solid var(--line);
-      border-radius: 11px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
       padding: 10px;
-      background: var(--bg-soft);
-      min-height: 70px;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
+        var(--bg-soft);
+      min-height: 72px;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      top: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.24);
+      opacity: 0.65;
     }
 
     .k {
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .v {
       font-size: 19px;
-      font-weight: 750;
+      font-weight: 760;
+      letter-spacing: 0.1px;
+    }
+
+    .ic {
+      width: 14px;
+      height: 14px;
+      color: #d8ddeb;
+      flex: 0 0 auto;
+      opacity: 0.96;
     }
 
     .tabs {
@@ -111,9 +157,11 @@
     }
 
     .tab {
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 999px;
-      background: #2a2c33;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+        #1f232c;
       color: var(--text);
       padding: 9px 13px;
       min-height: 38px;
@@ -122,24 +170,39 @@
       font-weight: 700;
       cursor: pointer;
       flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tab.active {
-      border-color: rgba(255, 255, 255, 0.32);
-      background: #363942;
+      border-color: rgba(255, 255, 255, 0.34);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.04)),
+        #2a303b;
       color: #ffffff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .tab .ic {
+      width: 13px;
+      height: 13px;
+      opacity: 0.95;
     }
 
     .list {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--bg-soft);
+      border: 1px solid var(--line-soft);
+      border-radius: 13px;
+      background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+        var(--bg-soft);
       overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
     }
 
     .row {
       padding: 12px;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--line-soft);
     }
 
     .row:last-child {
@@ -174,19 +237,19 @@
     .post-link {
       color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px dashed rgba(197, 201, 211, 0.45);
+      border-bottom: 1px dashed rgba(207, 213, 227, 0.52);
     }
 
     .post-link:hover {
-      border-bottom-color: rgba(197, 201, 211, 0.9);
+      border-bottom-color: rgba(207, 213, 227, 0.95);
     }
 
     .media {
       margin-top: 8px;
-      border: 1px solid var(--line);
+      border: 1px solid var(--line-soft);
       border-radius: 10px;
       padding: 7px 8px;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--glass);
     }
 
     .media summary {
@@ -194,6 +257,20 @@
       color: var(--muted);
       font-size: 12px;
       user-select: none;
+      list-style: none;
+    }
+
+    .media summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .media summary::before {
+      content: "▸ ";
+      color: #d4d9e8;
+    }
+
+    .media[open] summary::before {
+      content: "▾ ";
     }
 
     .media img {
@@ -247,20 +324,56 @@
   <div class="wrap">
     <div class="head">
       <h1 class="title">Kodovye Market • Отзывы</h1>
-      <p class="sub">Мини-апп в формате Telegram: карточки отзывов с товарами, ссылками и фото.</p>
+      <p class="sub">Глянцевая витрина отзывов: карточки товаров, ссылка на пост и фото из канала.</p>
       <div class="metrics">
-        <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
-        <div class="card"><div class="k">👍 Позитив</div><div class="v" id="mPos">0</div></div>
-        <div class="card"><div class="k">👎 Негатив</div><div class="v" id="mNeg">0</div></div>
-        <div class="card"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
+        <div class="card">
+          <div class="k">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            Все отзывы
+          </div>
+          <div class="v" id="mAll">0</div>
+        </div>
+        <div class="card">
+          <div class="k">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m6 13 4 4 8-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Позитивные
+          </div>
+          <div class="v" id="mPos">0</div>
+        </div>
+        <div class="card">
+          <div class="k">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Негативные
+          </div>
+          <div class="v" id="mNeg">0</div>
+        </div>
+        <div class="card">
+          <div class="k">
+            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 18V6m0 12h16M8 14l3-3 2 2 5-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Доля позитива
+          </div>
+          <div class="v" id="mRate">0%</div>
+        </div>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-filter="all">Все</button>
-      <button class="tab" data-filter="positive">👍 Позитив</button>
-      <button class="tab" data-filter="negative">👎 Негатив</button>
-      <button class="tab" data-filter="neutral">🟡 Нейтральные</button>
+      <button class="tab active" data-filter="all">
+        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        Все
+      </button>
+      <button class="tab" data-filter="positive">
+        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m6 13 4 4 8-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Позитив
+      </button>
+      <button class="tab" data-filter="negative">
+        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Негатив
+      </button>
+      <button class="tab" data-filter="neutral">
+        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Нейтральные
+      </button>
     </div>
 
     <div class="list" id="reviewsList"></div>
@@ -295,11 +408,11 @@
     function applyTelegramTheme() {
       if (!tg) return;
       const p = tg.themeParams || {};
-      setCssVar("--bg", p.bg_color || "#1a1b1f");
-      setCssVar("--bg-soft", p.secondary_bg_color || "#23252b");
-      setCssVar("--text", p.text_color || "#f3f4f7");
-      setCssVar("--muted", p.hint_color || "#a1a6b3");
-      setCssVar("--accent", p.accent_text_color || "#c5c9d3");
+      setCssVar("--bg", p.bg_color || "#121317");
+      setCssVar("--bg-soft", p.secondary_bg_color || "#1a1d24");
+      setCssVar("--text", p.text_color || "#f2f4f8");
+      setCssVar("--muted", p.hint_color || "#a8afbf");
+      setCssVar("--accent", p.accent_text_color || "#cfd5e3");
       if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
 
       try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
@@ -321,7 +434,7 @@
         if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
           tg.SecondaryButton.setParams({
             color: p.secondary_bg_color || "#2f3340",
-            text_color: p.text_color || "#f3f4f7",
+            text_color: p.text_color || "#f2f4f8",
           });
         }
       } catch (_) {}
@@ -482,7 +595,7 @@
           : productName;
         const idHtml = itemId > 0 ? ` • #${itemId}` : "";
         const media = photoUrl
-          ? `<details class="media"><summary>▸ Открыть фото из поста</summary><a href="${esc(photoUrl)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(photoUrl)}" alt="Фото к отзыву" /></a></details>`
+          ? `<details class="media"><summary>Открыть фото из поста</summary><a href="${esc(photoUrl)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(photoUrl)}" alt="Фото к отзыву" /></a></details>`
           : "";
         return `
           <div class="row">
