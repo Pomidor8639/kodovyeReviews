@@ -171,6 +171,40 @@
       font-size: 13px;
     }
 
+    .post-link {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(197, 201, 211, 0.45);
+    }
+
+    .post-link:hover {
+      border-bottom-color: rgba(197, 201, 211, 0.9);
+    }
+
+    .media {
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 7px 8px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .media summary {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 12px;
+      user-select: none;
+    }
+
+    .media img {
+      display: block;
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
     .badge {
       font-weight: 700;
       text-transform: lowercase;
@@ -213,7 +247,7 @@
   <div class="wrap">
     <div class="head">
       <h1 class="title">Kodovye Market • Отзывы</h1>
-      <p class="sub">Мини-апп в формате Telegram: безопасные зоны, адаптивная верстка и нативные кнопки.</p>
+      <p class="sub">Мини-апп в формате Telegram: карточки отзывов с товарами, ссылками и фото.</p>
       <div class="metrics">
         <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
         <div class="card"><div class="k">👍 Позитив</div><div class="v" id="mPos">0</div></div>
@@ -439,6 +473,17 @@
         const cls = rating === "positive" ? "good" : (rating === "negative" ? "bad" : "mid");
         const text = String(row.review_text || "").trim();
         const extra = text ? `<div class="line3">${esc(text)}</div>` : "";
+        const postUrl = String(row.post_url || "").trim();
+        const photoUrl = String(row.photo_url || "").trim();
+        const itemId = Number(row.purchase_id || 0);
+        const productName = esc(row.product_name || "Товар");
+        const productHtml = postUrl
+          ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
+          : productName;
+        const idHtml = itemId > 0 ? ` • #${itemId}` : "";
+        const media = photoUrl
+          ? `<details class="media"><summary>▸ Открыть фото из поста</summary><a href="${esc(photoUrl)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(photoUrl)}" alt="Фото к отзыву" /></a></details>`
+          : "";
         return `
           <div class="row">
             <div class="line1">
@@ -446,10 +491,11 @@
               <div>${esc(fmtDate(row.created_at))}</div>
             </div>
             <div class="line2">
-              <div>${esc(row.product_name || "Аккаунт")} • Заказ #${Number(row.purchase_id || 0)}</div>
+              <div>${productHtml}${idHtml}</div>
               <div class="badge ${cls}">${esc(row.rating_label || rating)}</div>
             </div>
             ${extra}
+            ${media}
           </div>`;
       }).join("");
     }
@@ -473,7 +519,6 @@
         rows = Array.isArray(payload.items) ? payload.items : [];
         renderMetrics(payload.stats || {});
         renderRows();
-
         const platform = tg && tg.platform ? ` • ${tg.platform}` : "";
         status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}${platform}`;
       } catch (err) {
