@@ -265,21 +265,66 @@
     }
 
     .media summary::before {
-      content: "▸ ";
+      content: "> ";
       color: #d4d9e8;
     }
 
     .media[open] summary::before {
-      content: "▾ ";
+      content: "v ";
     }
 
     .media img {
       display: block;
-      width: 100%;
-      max-height: 220px;
-      object-fit: cover;
+      width: auto;
+      max-width: 100%;
+      max-height: min(68vh, 560px);
+      object-fit: contain;
       border-radius: 8px;
-      margin-top: 8px;
+      margin: 8px auto 0;
+      cursor: zoom-in;
+      image-rendering: auto;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      background: rgba(7, 9, 12, 0.9);
+      backdrop-filter: blur(4px);
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 22px 44px rgba(0, 0, 0, 0.45);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #f3f6ff;
+      padding: 8px 11px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
     }
 
     .badge {
@@ -379,11 +424,18 @@
     <div class="list" id="reviewsList"></div>
     <div class="status" id="statusLine">Загрузка...</div>
   </div>
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" type="button">Закрыть</button>
+    <img id="lightboxImg" alt="Полное фото" />
+  </div>
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentFilter = "all";
     let rows = [];
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxClose = document.getElementById("lightboxClose");
 
     function esc(value) {
       return String(value || "")
@@ -460,6 +512,25 @@
       try { tg?.HapticFeedback?.impactOccurred?.("light"); } catch (_) {}
     }
 
+    function openLightbox(url) {
+      const src = String(url || "").trim();
+      if (!src || !lightbox || !lightboxImg) return;
+      lightboxImg.src = src;
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      try { tg?.BackButton?.show?.(); } catch (_) {}
+    }
+
+    function closeLightbox() {
+      if (!lightbox || !lightboxImg) return;
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      lightboxImg.src = "";
+      if (currentFilter === "all") {
+        try { tg?.BackButton?.hide?.(); } catch (_) {}
+      }
+    }
+
     function setFilter(nextFilter) {
       currentFilter = nextFilter || "all";
       document.querySelectorAll(".tab").forEach((x) => {
@@ -534,6 +605,10 @@
         tg.onEvent("fullscreenChanged", applyTelegramViewport);
         tg.onEvent("activated", fetchData);
         tg.onEvent("backButtonClicked", () => {
+          if (lightbox && lightbox.classList.contains("open")) {
+            closeLightbox();
+            return;
+          }
           if (currentFilter === "all") {
             try { tg.close(); } catch (_) {}
             return;
@@ -542,6 +617,10 @@
           setFilter("all");
         });
         tg.onEvent("secondaryButtonClicked", () => {
+          if (lightbox && lightbox.classList.contains("open")) {
+            closeLightbox();
+            return;
+          }
           telegramHapticSelection();
           if (currentFilter === "all") {
             try { tg.close(); } catch (_) {}
@@ -595,7 +674,7 @@
           : productName;
         const idHtml = itemId > 0 ? ` • #${itemId}` : "";
         const media = photoUrl
-          ? `<details class="media"><summary>Открыть фото из поста</summary><a href="${esc(photoUrl)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(photoUrl)}" alt="Фото к отзыву" /></a></details>`
+          ? `<details class="media"><summary>Открыть фото из поста</summary><a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`
           : "";
         return `
           <div class="row">
@@ -611,6 +690,14 @@
             ${media}
           </div>`;
       }).join("");
+
+      list.querySelectorAll("img.review-photo").forEach((img) => {
+        img.addEventListener("click", (event) => {
+          event.preventDefault();
+          const src = img.dataset.photo || img.getAttribute("src") || "";
+          openLightbox(src);
+        });
+      });
     }
 
     function bindTabs() {
@@ -619,6 +706,23 @@
           telegramHapticSelection();
           setFilter(btn.dataset.filter || "all");
         });
+      });
+    }
+
+    function bindLightbox() {
+      if (!lightbox) return;
+      lightbox.addEventListener("click", (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+      if (lightboxClose) {
+        lightboxClose.addEventListener("click", () => closeLightbox());
+      }
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeLightbox();
+        }
       });
     }
 
@@ -641,6 +745,7 @@
 
     initTelegramMiniApp();
     bindTabs();
+    bindLightbox();
     fetchData();
     setInterval(fetchData, 30000);
   </script>
