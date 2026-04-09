@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "generated_at": "1970-01-01T00:00:00+00:00",
+  "public_feed": true,
+  "stats": {
+    "all_reviews": 0,
+    "positive_reviews": 0,
+    "negative_reviews": 0,
+    "neutral_reviews": 0,
+    "positive_rate": 0.0,
+    "global_turnover_rub": 0.0,
+    "global_purchases_total": 0
+  },
+  "items": []
+}

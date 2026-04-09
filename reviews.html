@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodovye Market • Отзывы</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #131b33;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f4f7ff;
+      --muted: #96a5c9;
+      --good: #32d074;
+      --bad: #ff5d5d;
+      --mid: #ffbf47;
+      --accent: #57b8ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 500px at -20% -10%, rgba(87,184,255,0.2), transparent 60%),
+        radial-gradient(800px 450px at 120% 0%, rgba(50,208,116,0.15), transparent 55%),
+        var(--bg);
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 14px 24px;
+    }
+    .head {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      background: linear-gradient(130deg, rgba(87,184,255,0.2), rgba(50,208,116,0.12));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+    }
+    .title { margin: 0; font-size: 24px; font-weight: 800; }
+    .sub { margin: 6px 0 0; color: var(--muted); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--bg-soft);
+      min-height: 72px;
+    }
+    .k { color: var(--muted); font-size: 12px; margin-bottom: 3px; }
+    .v { font-size: 20px; font-weight: 700; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      overflow-x: auto;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #0f162c;
+      color: var(--text);
+      padding: 9px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .tab.active { border-color: var(--accent); background: rgba(87,184,255,0.2); }
+    .row {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--bg-soft);
+      margin-bottom: 9px;
+      padding: 11px 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+    }
+    .line1 { display: flex; justify-content: space-between; gap: 10px; }
+    .name { font-weight: 700; }
+    .date { color: var(--muted); font-size: 13px; }
+    .line2 { margin-top: 4px; color: var(--muted); font-size: 13px; }
+    .line3 { margin-top: 8px; white-space: pre-wrap; line-height: 1.35; }
+    .badge {
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid var(--line);
+    }
+    .b-positive { color: #092f16; background: var(--good); }
+    .b-negative { color: #3a0909; background: var(--bad); }
+    .b-neutral { color: #3a2a07; background: var(--mid); }
+    .status { color: var(--muted); margin-top: 8px; font-size: 13px; }
+    @media (max-width: 760px) {
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .line1 { flex-direction: column; align-items: flex-start; }
+      .title { font-size: 21px; }
+    }
+    @media (max-width: 460px) {
+      .metrics { grid-template-columns: 1fr; }
+      .title { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <h1 class="title">Kodovye Market • Отзывы</h1>
+      <p class="sub">Публичная витрина сделок и отзывов. Данные обновляются с сервера.</p>
+      <div class="metrics">
+        <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
+        <div class="card"><div class="k">👍 Позитив</div><div class="v" id="mPos">0</div></div>
+        <div class="card"><div class="k">👎 Негатив</div><div class="v" id="mNeg">0</div></div>
+        <div class="card"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-filter="all">Все</button>
+      <button class="tab" data-filter="positive">👍 Позитив</button>
+      <button class="tab" data-filter="negative">👎 Негатив</button>
+      <button class="tab" data-filter="neutral">🟡 Нейтральные</button>
+    </div>
+    <div id="rows"></div>
+    <div class="status" id="status">Загрузка...</div>
+  </div>
+
+  <script>
+    let currentFilter = "all";
+    let rows = [];
+
+    function esc(v) {
+      return String(v || "").replace(/[&<>"']/g, (ch) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;" }[ch]));
+    }
+    function fmtDate(value) {
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return String(value || "—");
+      return d.toLocaleString("ru-RU");
+    }
+    function renderMetrics(stats) {
+      const all = Number(stats.all_reviews || 0);
+      const pos = Number(stats.positive_reviews || 0);
+      const neg = Number(stats.negative_reviews || 0);
+      const rate = Number(stats.positive_rate || 0);
+      document.getElementById("mAll").textContent = all.toLocaleString("ru-RU");
+      document.getElementById("mPos").textContent = pos.toLocaleString("ru-RU");
+      document.getElementById("mNeg").textContent = neg.toLocaleString("ru-RU");
+      document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
+    }
+    function filteredRows() {
+      if (currentFilter === "all") return rows;
+      return rows.filter((r) => String(r.rating || "") === currentFilter);
+    }
+    function renderRows() {
+      const target = document.getElementById("rows");
+      const view = filteredRows();
+      if (!view.length) {
+        target.innerHTML = '<div class="row"><div class="line3">Записей нет.</div></div>';
+        return;
+      }
+      target.innerHTML = view.map((row) => {
+        const rating = String(row.rating || "neutral");
+        const badgeClass = rating === "positive" ? "b-positive" : (rating === "negative" ? "b-negative" : "b-neutral");
+        const ratingText = rating === "positive" ? "положительный" : (rating === "negative" ? "негативный" : "нейтральный");
+        return `
+          <div class="row">
+            <div class="line1">
+              <div class="name">${esc(row.user_alias || "Анонимный пользователь")}</div>
+              <div class="badge ${badgeClass}">${esc(ratingText)}</div>
+            </div>
+            <div class="line2">${fmtDate(row.created_at)} • ${esc(row.product_name || "Аккаунт")} • ${Number(row.paid_rub || 0).toFixed(2)} ₽</div>
+            ${row.review_text ? `<div class="line3">${esc(row.review_text)}</div>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+    async function loadData() {
+      const status = document.getElementById("status");
+      try {
+        const response = await fetch(`./reviews.json?ts=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        if (!payload || !Array.isArray(payload.items)) throw new Error("Неверный формат данных");
+        rows = payload.items;
+        renderMetrics(payload.stats || {});
+        renderRows();
+        status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
+      } catch (err) {
+        status.textContent = `Ошибка загрузки: ${err}`;
+      }
+    }
+    function bindTabs() {
+      document.querySelectorAll(".tab").forEach((el) => {
+        el.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+          el.classList.add("active");
+          currentFilter = String(el.dataset.filter || "all");
+          renderRows();
+        });
+      });
+    }
+
+    bindTabs();
+    loadData();
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
