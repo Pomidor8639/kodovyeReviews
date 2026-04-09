@@ -2,108 +2,210 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Kodovye Market • Отзывы</title>
+  <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
   <style>
     :root {
-      --bg: #0b1020;
-      --bg-soft: #131b33;
-      --line: rgba(255, 255, 255, 0.12);
-      --text: #f4f7ff;
-      --muted: #96a5c9;
-      --good: #32d074;
-      --bad: #ff5d5d;
-      --mid: #ffbf47;
-      --accent: #57b8ff;
+      --bg: #1a1b1f;
+      --bg-soft: #23252b;
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #f3f4f7;
+      --muted: #a1a6b3;
+      --good: #7ee2a8;
+      --bad: #ff8f8f;
+      --mid: #ffd889;
+      --accent: #c5c9d3;
+      --safe-top: 0px;
+      --safe-right: 0px;
+      --safe-bottom: 0px;
+      --safe-left: 0px;
+      --app-height: 100vh;
     }
-    * { box-sizing: border-box; }
-    body {
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
       margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
+      min-height: 100%;
+      background: radial-gradient(1000px 500px at -10% -10%, rgba(255, 255, 255, 0.07), transparent 55%), var(--bg);
       color: var(--text);
-      background:
-        radial-gradient(1000px 500px at -20% -10%, rgba(87,184,255,0.2), transparent 60%),
-        radial-gradient(800px 450px at 120% 0%, rgba(50,208,116,0.15), transparent 55%),
-        var(--bg);
+      font-family: "SF Pro Text", "Segoe UI", Arial, sans-serif;
     }
+
+    body {
+      min-height: var(--app-height);
+    }
+
     .wrap {
       max-width: 960px;
       margin: 0 auto;
-      padding: 18px 14px 24px;
+      padding:
+        calc(12px + var(--safe-top))
+        calc(12px + var(--safe-right))
+        calc(18px + var(--safe-bottom))
+        calc(12px + var(--safe-left));
     }
+
     .head {
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 14px 14px 12px;
-      background: linear-gradient(130deg, rgba(87,184,255,0.2), rgba(50,208,116,0.12));
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+      padding: 14px;
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
     }
-    .title { margin: 0; font-size: 24px; font-weight: 800; }
-    .sub { margin: 6px 0 0; color: var(--muted); }
+
+    .title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
     .metrics {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      gap: 9px;
       margin-top: 12px;
     }
+
     .card {
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 11px;
       padding: 10px;
       background: var(--bg-soft);
-      min-height: 72px;
+      min-height: 70px;
     }
-    .k { color: var(--muted); font-size: 12px; margin-bottom: 3px; }
-    .v { font-size: 20px; font-weight: 700; }
+
+    .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .v {
+      font-size: 19px;
+      font-weight: 750;
+    }
+
     .tabs {
       display: flex;
       gap: 8px;
       margin: 12px 0;
       overflow-x: auto;
+      scrollbar-width: none;
     }
-    .tabs::-webkit-scrollbar { display: none; }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
     .tab {
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: #0f162c;
+      background: #2a2c33;
       color: var(--text);
-      padding: 9px 14px;
-      cursor: pointer;
+      padding: 9px 13px;
+      min-height: 38px;
       white-space: nowrap;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex: 0 0 auto;
     }
-    .tab.active { border-color: var(--accent); background: rgba(87,184,255,0.2); }
-    .row {
+
+    .tab.active {
+      border-color: rgba(255, 255, 255, 0.32);
+      background: #363942;
+      color: #ffffff;
+    }
+
+    .list {
       border: 1px solid var(--line);
       border-radius: 12px;
       background: var(--bg-soft);
-      margin-bottom: 9px;
-      padding: 11px 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+      overflow: hidden;
     }
-    .line1 { display: flex; justify-content: space-between; gap: 10px; }
-    .name { font-weight: 700; }
-    .date { color: var(--muted); font-size: 13px; }
-    .line2 { margin-top: 4px; color: var(--muted); font-size: 13px; }
-    .line3 { margin-top: 8px; white-space: pre-wrap; line-height: 1.35; }
-    .badge {
-      font-size: 12px;
+
+    .row {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .line1 {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
       font-weight: 700;
-      border-radius: 999px;
-      padding: 4px 9px;
-      border: 1px solid var(--line);
     }
-    .b-positive { color: #092f16; background: var(--good); }
-    .b-negative { color: #3a0909; background: var(--bad); }
-    .b-neutral { color: #3a2a07; background: var(--mid); }
-    .status { color: var(--muted); margin-top: 8px; font-size: 13px; }
+
+    .line2 {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .line3 {
+      margin-top: 7px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.4;
+      font-size: 13px;
+    }
+
+    .badge {
+      font-weight: 700;
+      text-transform: lowercase;
+    }
+
+    .badge.good { color: var(--good); }
+    .badge.bad { color: var(--bad); }
+    .badge.mid { color: var(--mid); }
+
+    .status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
     @media (max-width: 760px) {
-      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .line1 { flex-direction: column; align-items: flex-start; }
-      .title { font-size: 21px; }
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .line1, .line2 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
     }
+
     @media (max-width: 460px) {
-      .metrics { grid-template-columns: 1fr; }
-      .title { font-size: 19px; }
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .title {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -111,7 +213,7 @@
   <div class="wrap">
     <div class="head">
       <h1 class="title">Kodovye Market • Отзывы</h1>
-      <p class="sub">Публичная витрина сделок и отзывов. Данные обновляются с сервера.</p>
+      <p class="sub">Мини-апп в формате Telegram: безопасные зоны, адаптивная верстка и нативные кнопки.</p>
       <div class="metrics">
         <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
         <div class="card"><div class="k">👍 Позитив</div><div class="v" id="mPos">0</div></div>
@@ -119,94 +221,191 @@
         <div class="card"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
       </div>
     </div>
+
     <div class="tabs">
       <button class="tab active" data-filter="all">Все</button>
       <button class="tab" data-filter="positive">👍 Позитив</button>
       <button class="tab" data-filter="negative">👎 Негатив</button>
       <button class="tab" data-filter="neutral">🟡 Нейтральные</button>
     </div>
-    <div id="rows"></div>
-    <div class="status" id="status">Загрузка...</div>
+
+    <div class="list" id="reviewsList"></div>
+    <div class="status" id="statusLine">Загрузка...</div>
   </div>
 
   <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentFilter = "all";
     let rows = [];
 
-    function esc(v) {
-      return String(v || "").replace(/[&<>"']/g, (ch) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;" }[ch]));
+    function esc(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
     }
-    function fmtDate(value) {
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return String(value || "—");
-      return d.toLocaleString("ru-RU");
+
+    function fmtDate(iso) {
+      if (!iso) return "-";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return String(iso);
+      return d.toLocaleString("ru-RU", { hour12: false });
     }
+
+    function setCssVar(name, value) {
+      if (!value) return;
+      document.documentElement.style.setProperty(name, String(value));
+    }
+
+    function applyTelegramTheme() {
+      if (!tg) return;
+      const p = tg.themeParams || {};
+
+      setCssVar("--bg", p.bg_color || "#1a1b1f");
+      setCssVar("--bg-soft", p.secondary_bg_color || "#23252b");
+      setCssVar("--text", p.text_color || "#f3f4f7");
+      setCssVar("--muted", p.hint_color || "#a1a6b3");
+      setCssVar("--accent", p.accent_text_color || "#c5c9d3");
+
+      if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
+
+      try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
+      try { tg.setBackgroundColor("bg_color"); } catch (_) {}
+      try {
+        if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.10")) {
+          tg.setBottomBarColor("secondary_bg_color");
+        }
+      } catch (_) {}
+    }
+
+    function applyTelegramViewport() {
+      if (!tg) return;
+      const contentInset = tg.contentSafeAreaInset || tg.safeAreaInset || {};
+      setCssVar("--safe-top", `${Number(contentInset.top || 0)}px`);
+      setCssVar("--safe-right", `${Number(contentInset.right || 0)}px`);
+      setCssVar("--safe-bottom", `${Number(contentInset.bottom || 0)}px`);
+      setCssVar("--safe-left", `${Number(contentInset.left || 0)}px`);
+
+      const h = Number(tg.viewportStableHeight || tg.viewportHeight || 0);
+      if (h > 0) {
+        setCssVar("--app-height", `${h}px`);
+      }
+    }
+
+    function telegramHapticSelection() {
+      try { tg?.HapticFeedback?.selectionChanged?.(); } catch (_) {}
+    }
+
+    function telegramHapticImpact() {
+      try { tg?.HapticFeedback?.impactOccurred?.("light"); } catch (_) {}
+    }
+
+    function initTelegramMiniApp() {
+      if (!tg) return;
+      tg.ready();
+      tg.expand();
+
+      applyTelegramTheme();
+      applyTelegramViewport();
+
+      try { tg.BackButton.hide(); } catch (_) {}
+      try {
+        tg.MainButton.setText("Обновить");
+        tg.MainButton.show();
+      } catch (_) {}
+
+      try {
+        tg.onEvent("themeChanged", applyTelegramTheme);
+        tg.onEvent("viewportChanged", applyTelegramViewport);
+        tg.onEvent("safeAreaChanged", applyTelegramViewport);
+        tg.onEvent("contentSafeAreaChanged", applyTelegramViewport);
+        tg.onEvent("mainButtonClicked", () => {
+          telegramHapticImpact();
+          fetchData();
+        });
+      } catch (_) {}
+    }
+
     function renderMetrics(stats) {
       const all = Number(stats.all_reviews || 0);
       const pos = Number(stats.positive_reviews || 0);
       const neg = Number(stats.negative_reviews || 0);
       const rate = Number(stats.positive_rate || 0);
+
       document.getElementById("mAll").textContent = all.toLocaleString("ru-RU");
       document.getElementById("mPos").textContent = pos.toLocaleString("ru-RU");
       document.getElementById("mNeg").textContent = neg.toLocaleString("ru-RU");
       document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
     }
+
     function filteredRows() {
       if (currentFilter === "all") return rows;
       return rows.filter((r) => String(r.rating || "") === currentFilter);
     }
+
     function renderRows() {
-      const target = document.getElementById("rows");
+      const list = document.getElementById("reviewsList");
       const view = filteredRows();
       if (!view.length) {
-        target.innerHTML = '<div class="row"><div class="line3">Записей нет.</div></div>';
+        list.innerHTML = '<div class="row"><div class="line3">Записей пока нет.</div></div>';
         return;
       }
-      target.innerHTML = view.map((row) => {
+
+      list.innerHTML = view.map((row) => {
         const rating = String(row.rating || "neutral");
-        const badgeClass = rating === "positive" ? "b-positive" : (rating === "negative" ? "b-negative" : "b-neutral");
-        const ratingText = rating === "positive" ? "положительный" : (rating === "negative" ? "негативный" : "нейтральный");
+        const cls = rating === "positive" ? "good" : (rating === "negative" ? "bad" : "mid");
+        const text = String(row.review_text || "").trim();
+        const extra = text ? `<div class="line3">${esc(text)}</div>` : "";
         return `
           <div class="row">
             <div class="line1">
-              <div class="name">${esc(row.user_alias || "Анонимный пользователь")}</div>
-              <div class="badge ${badgeClass}">${esc(ratingText)}</div>
+              <div>${esc(row.user_alias || "Пользователь")}</div>
+              <div>${esc(fmtDate(row.created_at))}</div>
             </div>
-            <div class="line2">${fmtDate(row.created_at)} • ${esc(row.product_name || "Аккаунт")} • ${Number(row.paid_rub || 0).toFixed(2)} ₽</div>
-            ${row.review_text ? `<div class="line3">${esc(row.review_text)}</div>` : ""}
-          </div>
-        `;
+            <div class="line2">
+              <div>${esc(row.product_name || "Аккаунт")} • Заказ #${Number(row.purchase_id || 0)}</div>
+              <div class="badge ${cls}">${esc(row.rating_label || rating)}</div>
+            </div>
+            ${extra}
+          </div>`;
       }).join("");
     }
-    async function loadData() {
-      const status = document.getElementById("status");
-      try {
-        const response = await fetch(`./reviews.json?ts=${Date.now()}`, { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const payload = await response.json();
-        if (!payload || !Array.isArray(payload.items)) throw new Error("Неверный формат данных");
-        rows = payload.items;
-        renderMetrics(payload.stats || {});
-        renderRows();
-        status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
-      } catch (err) {
-        status.textContent = `Ошибка загрузки: ${err}`;
-      }
-    }
+
     function bindTabs() {
-      document.querySelectorAll(".tab").forEach((el) => {
-        el.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          currentFilter = btn.dataset.filter || "all";
           document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
-          el.classList.add("active");
-          currentFilter = String(el.dataset.filter || "all");
+          btn.classList.add("active");
+          telegramHapticSelection();
           renderRows();
         });
       });
     }
 
+    async function fetchData() {
+      const status = document.getElementById("statusLine");
+      status.textContent = "Обновляю...";
+      try {
+        const response = await fetch(`./reviews.json?ts=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        rows = Array.isArray(payload.items) ? payload.items : [];
+        renderMetrics(payload.stats || {});
+        renderRows();
+
+        const platform = tg && tg.platform ? ` • ${tg.platform}` : "";
+        status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}${platform}`;
+      } catch (err) {
+        status.textContent = `Ошибка загрузки: ${err}`;
+      }
+    }
+
+    initTelegramMiniApp();
     bindTabs();
-    loadData();
-    setInterval(loadData, 30000);
+    fetchData();
+    setInterval(fetchData, 30000);
   </script>
 </body>
 </html>
