@@ -261,13 +261,11 @@
     function applyTelegramTheme() {
       if (!tg) return;
       const p = tg.themeParams || {};
-
       setCssVar("--bg", p.bg_color || "#1a1b1f");
       setCssVar("--bg-soft", p.secondary_bg_color || "#23252b");
       setCssVar("--text", p.text_color || "#f3f4f7");
       setCssVar("--muted", p.hint_color || "#a1a6b3");
       setCssVar("--accent", p.accent_text_color || "#c5c9d3");
-
       if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
 
       try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
@@ -275,6 +273,22 @@
       try {
         if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.10")) {
           tg.setBottomBarColor("secondary_bg_color");
+        }
+      } catch (_) {}
+      try {
+        if (tg.MainButton && tg.MainButton.setParams) {
+          tg.MainButton.setParams({
+            color: p.button_color || "#676d79",
+            text_color: p.button_text_color || "#ffffff",
+          });
+        }
+      } catch (_) {}
+      try {
+        if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
+          tg.SecondaryButton.setParams({
+            color: p.secondary_bg_color || "#2f3340",
+            text_color: p.text_color || "#f3f4f7",
+          });
         }
       } catch (_) {}
     }
@@ -288,9 +302,7 @@
       setCssVar("--safe-left", `${Number(contentInset.left || 0)}px`);
 
       const h = Number(tg.viewportStableHeight || tg.viewportHeight || 0);
-      if (h > 0) {
-        setCssVar("--app-height", `${h}px`);
-      }
+      if (h > 0) setCssVar("--app-height", `${h}px`);
     }
 
     function telegramHapticSelection() {
@@ -301,25 +313,95 @@
       try { tg?.HapticFeedback?.impactOccurred?.("light"); } catch (_) {}
     }
 
+    function setFilter(nextFilter) {
+      currentFilter = nextFilter || "all";
+      document.querySelectorAll(".tab").forEach((x) => {
+        const isActive = (x.dataset.filter || "all") === currentFilter;
+        x.classList.toggle("active", isActive);
+      });
+      updateTelegramButtons();
+      renderRows();
+    }
+
+    function updateTelegramButtons() {
+      if (!tg) return;
+      const isRoot = currentFilter === "all";
+
+      try {
+        if (isRoot) tg.BackButton.hide();
+        else tg.BackButton.show();
+      } catch (_) {}
+
+      try {
+        if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
+          tg.SecondaryButton.setParams({
+            text: isRoot ? "Закрыть" : "Сбросить фильтр",
+            is_visible: true,
+            position: "left",
+          });
+        } else if (tg.SecondaryButton) {
+          tg.SecondaryButton.setText(isRoot ? "Закрыть" : "Сбросить фильтр");
+          tg.SecondaryButton.show();
+        }
+      } catch (_) {}
+    }
+
     function initTelegramMiniApp() {
       if (!tg) return;
       tg.ready();
       tg.expand();
-
       applyTelegramTheme();
       applyTelegramViewport();
 
-      try { tg.BackButton.hide(); } catch (_) {}
       try {
-        tg.MainButton.setText("Обновить");
-        tg.MainButton.show();
+        const p = tg.themeParams || {};
+        if (tg.MainButton && tg.MainButton.setParams) {
+          tg.MainButton.setParams({
+            text: "Обновить",
+            is_visible: true,
+            color: p.button_color || "#676d79",
+            text_color: p.button_text_color || "#ffffff",
+          });
+        } else if (tg.MainButton) {
+          tg.MainButton.setText("Обновить");
+          tg.MainButton.show();
+        }
       } catch (_) {}
+      updateTelegramButtons();
 
+      try {
+        if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.7")) {
+          tg.enableVerticalSwipes();
+        }
+      } catch (_) {}
+      try {
+        if (tg.isVersionAtLeast && tg.isVersionAtLeast("8.0") && !tg.isFullscreen) {
+          tg.requestFullscreen();
+        }
+      } catch (_) {}
       try {
         tg.onEvent("themeChanged", applyTelegramTheme);
         tg.onEvent("viewportChanged", applyTelegramViewport);
         tg.onEvent("safeAreaChanged", applyTelegramViewport);
         tg.onEvent("contentSafeAreaChanged", applyTelegramViewport);
+        tg.onEvent("fullscreenChanged", applyTelegramViewport);
+        tg.onEvent("activated", fetchData);
+        tg.onEvent("backButtonClicked", () => {
+          if (currentFilter === "all") {
+            try { tg.close(); } catch (_) {}
+            return;
+          }
+          telegramHapticSelection();
+          setFilter("all");
+        });
+        tg.onEvent("secondaryButtonClicked", () => {
+          telegramHapticSelection();
+          if (currentFilter === "all") {
+            try { tg.close(); } catch (_) {}
+            return;
+          }
+          setFilter("all");
+        });
         tg.onEvent("mainButtonClicked", () => {
           telegramHapticImpact();
           fetchData();
@@ -375,11 +457,8 @@
     function bindTabs() {
       document.querySelectorAll(".tab").forEach((btn) => {
         btn.addEventListener("click", () => {
-          currentFilter = btn.dataset.filter || "all";
-          document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
-          btn.classList.add("active");
           telegramHapticSelection();
-          renderRows();
+          setFilter(btn.dataset.filter || "all");
         });
       });
     }
