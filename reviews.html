@@ -9,7 +9,6 @@
     :root {
       --bg: #121317;
       --bg-soft: #1a1d24;
-      --glass: rgba(255, 255, 255, 0.06);
       --line: rgba(255, 255, 255, 0.12);
       --line-soft: rgba(255, 255, 255, 0.08);
       --text: #f2f4f8;
@@ -18,8 +17,8 @@
       --bad: #ff9b9b;
       --mid: #f1d39a;
       --accent: #cfd5e3;
-      --shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
       --safe-top: 0px;
+      --safe-top-fallback: env(safe-area-inset-top, 0px);
       --safe-right: 0px;
       --safe-bottom: 0px;
       --safe-left: 0px;
@@ -50,31 +49,21 @@
       max-width: 960px;
       margin: 0 auto;
       padding:
-        calc(12px + var(--safe-top))
+        calc(16px + max(var(--safe-top), var(--safe-top-fallback)))
         calc(12px + var(--safe-right))
         calc(18px + var(--safe-bottom))
         calc(12px + var(--safe-left));
     }
 
     .head {
-      position: relative;
-      overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 14px;
       background:
         linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
         linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.15));
-      box-shadow: var(--shadow);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
       backdrop-filter: blur(4px);
-    }
-
-    .head::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 38%);
-      pointer-events: none;
     }
 
     .title {
@@ -99,8 +88,6 @@
     }
 
     .card {
-      position: relative;
-      overflow: hidden;
       border: 1px solid var(--line-soft);
       border-radius: 12px;
       padding: 10px;
@@ -110,24 +97,10 @@
       min-height: 72px;
     }
 
-    .card::after {
-      content: "";
-      position: absolute;
-      left: 8px;
-      right: 8px;
-      top: 0;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.24);
-      opacity: 0.65;
-    }
-
     .k {
       color: var(--muted);
       font-size: 12px;
       margin-bottom: 3px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .v {
@@ -136,24 +109,11 @@
       letter-spacing: 0.1px;
     }
 
-    .ic {
-      width: 14px;
-      height: 14px;
-      color: #d8ddeb;
-      flex: 0 0 auto;
-      opacity: 0.96;
-    }
-
     .tabs {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin: 12px 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .tabs::-webkit-scrollbar {
-      display: none;
     }
 
     .tab {
@@ -163,16 +123,23 @@
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
         #1f232c;
       color: var(--text);
-      padding: 9px 13px;
+      padding: 9px 10px;
       min-height: 38px;
-      white-space: nowrap;
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
-      flex: 0 0 auto;
+      width: 100%;
+      min-width: 0;
+      text-align: center;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+    }
+
+    .tab-label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .tab.active {
@@ -182,12 +149,6 @@
         #2a303b;
       color: #ffffff;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
-    }
-
-    .tab .ic {
-      width: 13px;
-      height: 13px;
-      opacity: 0.95;
     }
 
     .list {
@@ -224,6 +185,49 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.35;
+      align-items: center;
+    }
+
+    .meta-left {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .product-chip {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 9px;
+      color: #d4d9e6;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .product-chip a {
+      color: inherit;
+      text-decoration: none;
+      border: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: min(58vw, 320px);
+      display: inline-block;
+    }
+
+    .item-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 2px 8px;
+      color: #c4cad9;
+      font-size: 12px;
+      font-weight: 650;
     }
 
     .line3 {
@@ -249,7 +253,7 @@
       border: 1px solid var(--line-soft);
       border-radius: 10px;
       padding: 7px 8px;
-      background: var(--glass);
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .media summary {
@@ -347,6 +351,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .line1, .line2 {
         flex-direction: column;
         align-items: flex-start;
@@ -369,56 +377,20 @@
   <div class="wrap">
     <div class="head">
       <h1 class="title">Kodovye Market • Отзывы</h1>
-      <p class="sub">Глянцевая витрина отзывов: карточки товаров, ссылка на пост и фото из канала.</p>
+      <p class="sub">Глянцевая витрина отзывов: карточки сделок, товар и фото из поста.</p>
       <div class="metrics">
-        <div class="card">
-          <div class="k">
-            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.7"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-            Все отзывы
-          </div>
-          <div class="v" id="mAll">0</div>
-        </div>
-        <div class="card">
-          <div class="k">
-            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m6 13 4 4 8-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Позитивные
-          </div>
-          <div class="v" id="mPos">0</div>
-        </div>
-        <div class="card">
-          <div class="k">
-            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            Негативные
-          </div>
-          <div class="v" id="mNeg">0</div>
-        </div>
-        <div class="card">
-          <div class="k">
-            <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 18V6m0 12h16M8 14l3-3 2 2 5-5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Доля позитива
-          </div>
-          <div class="v" id="mRate">0%</div>
-        </div>
+        <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
+        <div class="card"><div class="k">Позитивные</div><div class="v" id="mPos">0</div></div>
+        <div class="card"><div class="k">Негативные</div><div class="v" id="mNeg">0</div></div>
+        <div class="card"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
       </div>
     </div>
 
     <div class="tabs">
-      <button class="tab active" data-filter="all">
-        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        Все
-      </button>
-      <button class="tab" data-filter="positive">
-        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m6 13 4 4 8-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Позитив
-      </button>
-      <button class="tab" data-filter="negative">
-        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="m7 7 10 10M17 7 7 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Негатив
-      </button>
-      <button class="tab" data-filter="neutral">
-        <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Нейтральные
-      </button>
+      <button class="tab active" data-filter="all"><span class="tab-label">Все</span></button>
+      <button class="tab" data-filter="positive"><span class="tab-label">Позитив</span></button>
+      <button class="tab" data-filter="negative"><span class="tab-label">Негатив</span></button>
+      <button class="tab" data-filter="neutral"><span class="tab-label">Нейтрал</span></button>
     </div>
 
     <div class="list" id="reviewsList"></div>
@@ -495,7 +467,9 @@
     function applyTelegramViewport() {
       if (!tg) return;
       const contentInset = tg.contentSafeAreaInset || tg.safeAreaInset || {};
-      setCssVar("--safe-top", `${Number(contentInset.top || 0)}px`);
+      const rawTop = Number(contentInset.top || 0);
+      const iosFallbackTop = (tg.platform === "ios" && rawTop < 18) ? 34 : 0;
+      setCssVar("--safe-top", `${Math.max(rawTop, iosFallbackTop)}px`);
       setCssVar("--safe-right", `${Number(contentInset.right || 0)}px`);
       setCssVar("--safe-bottom", `${Number(contentInset.bottom || 0)}px`);
       setCssVar("--safe-left", `${Number(contentInset.left || 0)}px`);
@@ -586,7 +560,6 @@
         }
       } catch (_) {}
       updateTelegramButtons();
-
       try {
         if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.7")) {
           tg.enableVerticalSwipes();
@@ -640,11 +613,27 @@
       const pos = Number(stats.positive_reviews || 0);
       const neg = Number(stats.negative_reviews || 0);
       const rate = Number(stats.positive_rate || 0);
+      const neutral = Number(stats.neutral_reviews || 0);
 
       document.getElementById("mAll").textContent = all.toLocaleString("ru-RU");
       document.getElementById("mPos").textContent = pos.toLocaleString("ru-RU");
       document.getElementById("mNeg").textContent = neg.toLocaleString("ru-RU");
       document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
+
+      const neutralTab = document.querySelector('.tab[data-filter="neutral"]');
+      if (neutralTab) {
+        neutralTab.style.display = neutral > 0 ? "" : "none";
+      }
+      if (neutral <= 0 && currentFilter === "neutral") {
+        setFilter("all");
+      }
+    }
+
+    function normalizeProductName(value) {
+      let text = String(value || "Товар").trim();
+      text = text.replace(/[:\s-]*#\d+\s*$/u, "").trim();
+      text = text.replace(/\s{2,}/g, " ");
+      return text || "Товар";
     }
 
     function filteredRows() {
@@ -668,11 +657,11 @@
         const postUrl = String(row.post_url || "").trim();
         const photoUrl = String(row.photo_url || "").trim();
         const itemId = Number(row.purchase_id || 0);
-        const productName = esc(row.product_name || "Товар");
-        const productHtml = postUrl
-          ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
-          : productName;
-        const idHtml = itemId > 0 ? ` • #${itemId}` : "";
+        const productName = esc(normalizeProductName(row.product_name || "Товар"));
+        const productCore = postUrl
+          ? `<a class="product-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
+          : `<span>${productName}</span>`;
+        const idHtml = itemId > 0 ? `<span class="item-chip">#${itemId}</span>` : "";
         const media = photoUrl
           ? `<details class="media"><summary>Открыть фото из поста</summary><a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`
           : "";
@@ -683,7 +672,7 @@
               <div>${esc(fmtDate(row.created_at))}</div>
             </div>
             <div class="line2">
-              <div>${productHtml}${idHtml}</div>
+              <div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div>
               <div class="badge ${cls}">${esc(row.rating_label || rating)}</div>
             </div>
             ${extra}
