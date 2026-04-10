@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Kodovye Market • Отзывы</title>
+  <title>Kodovye Market</title>
   <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
   <style>
     :root {
-      --bg: #121317;
-      --bg-soft: #1a1d24;
-      --line: rgba(255, 255, 255, 0.12);
-      --line-soft: rgba(255, 255, 255, 0.08);
-      --text: #f2f4f8;
-      --muted: #a8afbf;
-      --good: #89e3b0;
-      --bad: #ff9b9b;
-      --mid: #f1d39a;
-      --accent: #cfd5e3;
+      --bg: #0f1116;
+      --bg-soft: #181c24;
+      --line: rgba(255, 255, 255, 0.14);
+      --line-soft: rgba(255, 255, 255, 0.09);
+      --text: #f2f5fb;
+      --muted: #a9b1c2;
+      --good: #84dfaa;
+      --bad: #ff9f9f;
+      --mid: #f0d59a;
+      --accent: #d7deee;
       --safe-top: 0px;
       --safe-top-fallback: env(safe-area-inset-top, 0px);
       --safe-right: 0px;
@@ -24,170 +24,309 @@
       --safe-left: 0px;
       --app-height: 100vh;
     }
-
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
-
     html, body {
       margin: 0;
       min-height: 100%;
       color: var(--text);
       font-family: "SF Pro Text", "Segoe UI", Arial, sans-serif;
       background:
-        radial-gradient(980px 420px at -15% -10%, rgba(255, 255, 255, 0.12), transparent 55%),
-        radial-gradient(720px 360px at 120% -10%, rgba(255, 255, 255, 0.08), transparent 50%),
-        linear-gradient(165deg, #0f1014 0%, #151821 44%, #1a1f2a 100%);
+        radial-gradient(900px 360px at -10% -10%, rgba(255, 255, 255, 0.12), transparent 55%),
+        radial-gradient(760px 340px at 115% -15%, rgba(255, 255, 255, 0.08), transparent 52%),
+        linear-gradient(168deg, #0e1015 0%, #151923 46%, #1a202c 100%);
     }
-
     body {
       min-height: var(--app-height);
     }
-
     .wrap {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
       padding:
-        calc(16px + max(var(--safe-top), var(--safe-top-fallback)))
+        calc(12px + max(var(--safe-top), var(--safe-top-fallback)))
         calc(12px + var(--safe-right))
-        calc(18px + var(--safe-bottom))
+        calc(20px + var(--safe-bottom))
         calc(12px + var(--safe-left));
     }
-
-    .head {
-      border: 1px solid var(--line);
+    .hero {
       border-radius: 16px;
+      border: 1px solid var(--line);
       padding: 14px;
+      margin-bottom: 10px;
       background:
-        linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.15));
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.34);
-      backdrop-filter: blur(4px);
+        linear-gradient(155deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.18));
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.34);
     }
-
     .title {
       margin: 0;
       font-size: 22px;
       font-weight: 800;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.15px;
     }
-
     .sub {
       margin: 6px 0 0;
       color: var(--muted);
-      line-height: 1.4;
+      line-height: 1.42;
       font-size: 14px;
     }
-
-    .metrics {
+    .section-nav {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 9px;
-      margin-top: 12px;
-    }
-
-    .card {
-      border: 1px solid var(--line-soft);
-      border-radius: 12px;
-      padding: 10px;
-      background:
-        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
-        var(--bg-soft);
-      min-height: 72px;
-    }
-
-    .k {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 3px;
-    }
-
-    .v {
-      font-size: 19px;
-      font-weight: 760;
-      letter-spacing: 0.1px;
-    }
-
-    .tabs {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 8px;
-      margin: 12px 0;
+      margin: 10px 0 12px;
     }
-
-    .tab {
-      border: 1px solid var(--line-soft);
+    .nav-btn {
       border-radius: 999px;
+      border: 1px solid var(--line-soft);
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-        #1f232c;
+        #1c212b;
       color: var(--text);
-      padding: 9px 10px;
-      min-height: 38px;
       font-size: 13px;
       font-weight: 700;
+      padding: 9px 10px;
       cursor: pointer;
+      min-height: 38px;
       width: 100%;
-      min-width: 0;
-      text-align: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
     }
-
-    .tab-label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .tab.active {
-      border-color: rgba(255, 255, 255, 0.34);
+    .nav-btn.active {
+      border-color: rgba(255, 255, 255, 0.32);
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.04)),
         #2a303b;
-      color: #ffffff;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
     }
-
+    .section {
+      display: none;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background:
+        linear-gradient(168deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+        var(--bg-soft);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .section.active {
+      display: block;
+    }
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 760;
+      letter-spacing: 0.1px;
+    }
+    .section p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .metric {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 72px;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
+        rgba(255, 255, 255, 0.03);
+    }
+    .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .v {
+      font-size: 19px;
+      font-weight: 760;
+    }
+    .price-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .price-card {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
+        rgba(255, 255, 255, 0.03);
+      padding: 11px;
+    }
+    .price-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .price-value {
+      font-size: 21px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .price-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .price-list {
+      margin-top: 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 10px 12px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .price-row:last-child {
+      border-bottom: none;
+    }
+    .price-row .label {
+      color: #eef2fb;
+      font-weight: 600;
+    }
+    .price-row .val {
+      color: #ffffff;
+      font-weight: 760;
+    }
+    .support-box {
+      margin-top: 10px;
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      padding: 12px;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015)),
+        rgba(255, 255, 255, 0.03);
+    }
+    .support-link {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 700;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.05)),
+        #2b3240;
+    }
+    .doc-list {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+    details.doc {
+      border: 1px solid var(--line-soft);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden;
+    }
+    details.doc summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      padding: 11px 12px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #f4f7ff;
+      border-bottom: 1px solid transparent;
+    }
+    details.doc[open] summary {
+      border-bottom-color: var(--line-soft);
+    }
+    details.doc summary::-webkit-details-marker {
+      display: none;
+    }
+    details.doc summary::before {
+      content: "▸ ";
+      color: #d7deee;
+    }
+    details.doc[open] summary::before {
+      content: "▾ ";
+    }
+    .doc-body {
+      padding: 10px 12px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+    .review-filters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 2px 0 10px;
+    }
+    .filter-btn {
+      border-radius: 999px;
+      border: 1px solid var(--line-soft);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+        #1f2430;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 10px;
+      min-height: 38px;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      border-color: rgba(255, 255, 255, 0.3);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)),
+        #2a313e;
+    }
     .list {
       border: 1px solid var(--line-soft);
-      border-radius: 13px;
-      background:
-        linear-gradient(165deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
-        var(--bg-soft);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+      background:
+        linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
+        rgba(255, 255, 255, 0.03);
     }
-
     .row {
       padding: 12px;
       border-bottom: 1px solid var(--line-soft);
     }
-
     .row:last-child {
       border-bottom: none;
     }
-
     .line1 {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 4px;
       font-weight: 700;
+      align-items: flex-start;
     }
-
     .line2 {
       display: flex;
       justify-content: space-between;
       gap: 10px;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.35;
       align-items: center;
+      line-height: 1.35;
     }
-
     .meta-left {
       display: inline-flex;
       align-items: center;
@@ -195,31 +334,27 @@
       gap: 6px;
       min-width: 0;
     }
-
     .product-chip {
       display: inline-flex;
       align-items: center;
       min-width: 0;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       background: rgba(255, 255, 255, 0.06);
       padding: 3px 9px;
-      color: #d4d9e6;
-      font-weight: 600;
+      color: #d7ddef;
+      font-weight: 620;
       text-decoration: none;
     }
-
     .product-chip a {
       color: inherit;
       text-decoration: none;
-      border: none;
-      overflow: hidden;
-      text-overflow: ellipsis;
       white-space: nowrap;
       max-width: min(58vw, 320px);
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: inline-block;
     }
-
     .item-chip {
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
@@ -229,7 +364,6 @@
       font-size: 12px;
       font-weight: 650;
     }
-
     .line3 {
       margin-top: 7px;
       white-space: pre-wrap;
@@ -237,18 +371,13 @@
       line-height: 1.4;
       font-size: 13px;
     }
-
     .post-link {
       color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px dashed rgba(207, 213, 227, 0.52);
+      border-bottom: 1px dashed rgba(207, 213, 227, 0.5);
       margin-right: 10px;
+      font-size: 13px;
     }
-
-    .post-link:hover {
-      border-bottom-color: rgba(207, 213, 227, 0.95);
-    }
-
     .media {
       margin-top: 8px;
       border: 1px solid var(--line-soft);
@@ -256,7 +385,6 @@
       padding: 7px 8px;
       background: rgba(255, 255, 255, 0.04);
     }
-
     .media summary {
       cursor: pointer;
       color: var(--muted);
@@ -265,39 +393,47 @@
       list-style: none;
       margin-bottom: 5px;
     }
-
     .media summary::-webkit-details-marker {
       display: none;
     }
-
     .media summary::before {
       content: "▸ ";
-      color: #d4d9e8;
+      color: #d7deee;
     }
-
     .media[open] summary::before {
       content: "▾ ";
     }
-
     .media img {
       display: block;
       width: auto;
       max-width: 100%;
-      max-height: min(68vh, 560px);
+      max-height: min(72vh, 760px);
       object-fit: contain;
       border-radius: 8px;
       margin: 8px auto 0;
       cursor: zoom-in;
       image-rendering: auto;
     }
-
     .img-fail {
       margin-top: 8px;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.4;
     }
-
+    .badge {
+      font-weight: 760;
+      text-transform: lowercase;
+      white-space: nowrap;
+    }
+    .badge.good { color: var(--good); }
+    .badge.bad { color: var(--bad); }
+    .badge.mid { color: var(--mid); }
+    .status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
     .lightbox {
       position: fixed;
       inset: 0;
@@ -309,11 +445,9 @@
       background: rgba(7, 9, 12, 0.9);
       backdrop-filter: blur(4px);
     }
-
     .lightbox.open {
       display: flex;
     }
-
     .lightbox img {
       display: block;
       max-width: 100%;
@@ -325,7 +459,6 @@
       border: 1px solid rgba(255, 255, 255, 0.14);
       box-shadow: 0 22px 44px rgba(0, 0, 0, 0.45);
     }
-
     .lightbox-close {
       position: absolute;
       top: 10px;
@@ -339,71 +472,129 @@
       font-size: 12px;
       font-weight: 700;
     }
-
-    .badge {
-      font-weight: 700;
-      text-transform: lowercase;
+    @media (max-width: 860px) {
+      .section-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .price-grid { grid-template-columns: 1fr; }
+      .review-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-
-    .badge.good { color: var(--good); }
-    .badge.bad { color: var(--bad); }
-    .badge.mid { color: var(--mid); }
-
-    .status {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    @media (max-width: 760px) {
-      .metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    @media (max-width: 520px) {
+      .wrap {
+        padding-left: calc(10px + var(--safe-left));
+        padding-right: calc(10px + var(--safe-right));
       }
-
-      .tabs {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .line1, .line2 {
+      .title { font-size: 20px; }
+      .line1, .line2, .price-row {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
       }
-    }
-
-    @media (max-width: 460px) {
-      .metrics {
-        grid-template-columns: 1fr;
-      }
-
-      .title {
-        font-size: 20px;
-      }
+      .section-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="head">
-      <h1 class="title">Kodovye Market • Отзывы</h1>
-      <p class="sub">Глянцевая витрина отзывов: карточки сделок, товар и фото из поста.</p>
+    <header class="hero">
+      <h1 class="title">Kodovye Market</h1>
+      <p class="sub">Каталог аккаунтов, витрина отзывов, поддержка и документы в одном мини-приложении.</p>
+    </header>
+
+    <nav class="section-nav" aria-label="Разделы">
+      <button class="nav-btn active" data-section="overview" type="button">Обзор</button>
+      <button class="nav-btn" data-section="prices" type="button">Цены</button>
+      <button class="nav-btn" data-section="reviews" type="button">Отзывы</button>
+      <button class="nav-btn" data-section="support" type="button">Техподдержка</button>
+      <button class="nav-btn" data-section="docs" type="button">Документы</button>
+    </nav>
+
+    <section class="section active" id="section-overview">
+      <h2>Общая статистика</h2>
+      <p>Ниже отображается сводка по отзывам и сделкам из публичного канала.</p>
       <div class="metrics">
-        <div class="card"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
-        <div class="card"><div class="k">Позитивные</div><div class="v" id="mPos">0</div></div>
-        <div class="card"><div class="k">Негативные</div><div class="v" id="mNeg">0</div></div>
-        <div class="card"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
+        <div class="metric"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
+        <div class="metric"><div class="k">Позитивные</div><div class="v" id="mPos">0</div></div>
+        <div class="metric"><div class="k">Негативные</div><div class="v" id="mNeg">0</div></div>
+        <div class="metric"><div class="k">Доля позитива</div><div class="v" id="mRate">0%</div></div>
       </div>
-    </div>
+    </section>
 
-    <div class="tabs">
-      <button class="tab active" data-filter="all"><span class="tab-label">Все</span></button>
-      <button class="tab" data-filter="positive"><span class="tab-label">Позитив</span></button>
-      <button class="tab" data-filter="negative"><span class="tab-label">Негатив</span></button>
-      <button class="tab" data-filter="neutral"><span class="tab-label">Нейтрал</span></button>
-    </div>
+    <section class="section" id="section-prices">
+      <h2>Товары и цены</h2>
+      <p>Прайс отображает стартовые значения для клиента. Финальная цена подтверждается в боте перед оплатой.</p>
+      <div class="price-grid">
+        <article class="price-card">
+          <div class="price-title">ChatGPT Plus аккаунт</div>
+          <div class="price-value">от 160 ₽</div>
+          <div class="price-note">Минимальный порог для покупателя. Бот подбирает самый выгодный лот автоматически.</div>
+        </article>
+        <article class="price-card">
+          <div class="price-title">Telegram аккаунт</div>
+          <div class="price-value">от 45 ₽</div>
+          <div class="price-note">Стоимость зависит от страны номера и текущего предложения на маркетплейсе.</div>
+        </article>
+      </div>
+      <div class="price-list">
+        <div class="price-row"><span class="label">Telegram +1 (США)</span><span class="val">от 65 ₽</span></div>
+        <div class="price-row"><span class="label">Telegram +91 (Индия)</span><span class="val">от 45 ₽</span></div>
+        <div class="price-row"><span class="label">Telegram +380 (Украина)</span><span class="val">от 120 ₽</span></div>
+        <div class="price-row"><span class="label">Telegram +880 (Бангладеш)</span><span class="val">от 65 ₽</span></div>
+      </div>
+    </section>
 
-    <div class="list" id="reviewsList"></div>
-    <div class="status" id="statusLine">Загрузка...</div>
+    <section class="section" id="section-reviews">
+      <h2>Отзывы</h2>
+      <p>Карточки обновляются автоматически. Доступны фильтры и просмотр фото в полном размере.</p>
+      <div class="review-filters">
+        <button class="filter-btn active" data-filter="all" type="button">Все</button>
+        <button class="filter-btn" data-filter="positive" type="button">Позитив</button>
+        <button class="filter-btn" data-filter="negative" type="button">Негатив</button>
+        <button class="filter-btn" data-filter="neutral" type="button">Нейтрал</button>
+      </div>
+      <div class="list" id="reviewsList"></div>
+      <div class="status" id="statusLine">Загрузка...</div>
+    </section>
+
+    <section class="section" id="section-support">
+      <h2>Техподдержка</h2>
+      <p>Если после пополнения или покупки возник вопрос, напишите оператору. Ответ придет в личные сообщения.</p>
+      <div class="support-box">
+        <div><strong>Контакт:</strong> @pomidor863x</div>
+        <div style="margin-top:6px; color: var(--muted);">Рекомендуем в сообщении указать ID заказа, сумму и скриншот платежа.</div>
+        <a class="support-link" href="https://t.me/pomidor863x" target="_blank" rel="noopener">Открыть техподдержку</a>
+      </div>
+    </section>
+
+    <section class="section" id="section-docs">
+      <h2>Документы</h2>
+      <p>Правила работы сервиса, обработка данных и условия использования.</p>
+      <div class="doc-list">
+        <details class="doc">
+          <summary>Политика конфиденциальности</summary>
+          <div class="doc-body">1. Сервис хранит только данные, необходимые для обработки заказов: Telegram ID, историю покупок и статусы платежей.
+2. Персональные данные не передаются третьим лицам, кроме платежных провайдеров в рамках обработки платежа.
+3. Пользователь может запросить удаление данных, обратившись в техподдержку.</div>
+        </details>
+        <details class="doc">
+          <summary>Пользовательское соглашение</summary>
+          <div class="doc-body">1. Пользователь обязуется использовать сервис в рамках действующего законодательства.
+2. Оплата означает согласие с текущими условиями и ценами.
+3. Администрация вправе обновлять функционал и условия сервиса без отдельного уведомления.</div>
+        </details>
+        <details class="doc">
+          <summary>Условия оплаты и возврата</summary>
+          <div class="doc-body">1. Сумма к оплате отображается до создания счета.
+2. Если активна подписка на канал, применяется скидка к сумме платежа.
+3. Возврат рассматривается индивидуально через техподдержку при наличии подтверждающих данных.</div>
+        </details>
+        <details class="doc">
+          <summary>Публичная оферта по цифровым товарам</summary>
+          <div class="doc-body">1. Предмет оферты: предоставление цифровых данных по приобретенному товару.
+2. Момент исполнения: передача данных в чат бота после успешной оплаты.
+3. Поддержка по сделке предоставляется в рабочем чате техподдержки.</div>
+        </details>
+      </div>
+    </section>
   </div>
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -413,9 +604,11 @@
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    const sectionButtons = Array.from(document.querySelectorAll(".nav-btn"));
+    const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+    let currentSection = "overview";
     let currentFilter = "all";
     let rows = [];
-
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxClose = document.getElementById("lightboxClose");
@@ -425,46 +618,35 @@
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+        .replaceAll("\"", "&quot;");
     }
-
     function fmtDate(iso) {
       if (!iso) return "-";
       const d = new Date(iso);
       if (Number.isNaN(d.getTime())) return String(iso);
       return d.toLocaleString("ru-RU", { hour12: false });
     }
-
     function setCssVar(name, value) {
       if (!value) return;
       document.documentElement.style.setProperty(name, String(value));
     }
-
     function applyTelegramTheme() {
       if (!tg) return;
       const p = tg.themeParams || {};
-      setCssVar("--bg", p.bg_color || "#121317");
-      setCssVar("--bg-soft", p.secondary_bg_color || "#1a1d24");
-      setCssVar("--text", p.text_color || "#f2f4f8");
-      setCssVar("--muted", p.hint_color || "#a8afbf");
-      setCssVar("--accent", p.accent_text_color || "#cfd5e3");
+      setCssVar("--bg", p.bg_color || "#0f1116");
+      setCssVar("--bg-soft", p.secondary_bg_color || "#181c24");
+      setCssVar("--text", p.text_color || "#f2f5fb");
+      setCssVar("--muted", p.hint_color || "#a9b1c2");
+      setCssVar("--accent", p.accent_text_color || "#d7deee");
       if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
-
       try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
       try { tg.setBackgroundColor("bg_color"); } catch (_) {}
-      try { if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.10")) tg.setBottomBarColor("secondary_bg_color"); } catch (_) {}
       try {
         if (tg.MainButton && tg.MainButton.setParams) {
-          tg.MainButton.setParams({ color: p.button_color || "#676d79", text_color: p.button_text_color || "#ffffff" });
-        }
-      } catch (_) {}
-      try {
-        if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
-          tg.SecondaryButton.setParams({ color: p.secondary_bg_color || "#2f3340", text_color: p.text_color || "#f2f4f8" });
+          tg.MainButton.setParams({ color: p.button_color || "#5b6577", text_color: p.button_text_color || "#ffffff" });
         }
       } catch (_) {}
     }
-
     function applyTelegramViewport() {
       if (!tg) return;
       const contentInset = tg.contentSafeAreaInset || tg.safeAreaInset || {};
@@ -477,15 +659,8 @@
       const h = Number(tg.viewportStableHeight || tg.viewportHeight || 0);
       if (h > 0) setCssVar("--app-height", `${h}px`);
     }
-
-    function telegramHapticSelection() {
-      try { tg?.HapticFeedback?.selectionChanged?.(); } catch (_) {}
-    }
-
-    function telegramHapticImpact() {
-      try { tg?.HapticFeedback?.impactOccurred?.("light"); } catch (_) {}
-    }
-
+    function hapticSelection() { try { tg?.HapticFeedback?.selectionChanged?.(); } catch (_) {} }
+    function hapticImpact() { try { tg?.HapticFeedback?.impactOccurred?.("light"); } catch (_) {} }
     function openLightbox(url) {
       const src = String(url || "").trim();
       if (!src || !lightbox || !lightboxImg) return;
@@ -494,41 +669,48 @@
       lightbox.setAttribute("aria-hidden", "false");
       try { tg?.BackButton?.show?.(); } catch (_) {}
     }
-
     function closeLightbox() {
       if (!lightbox || !lightboxImg) return;
       lightbox.classList.remove("open");
       lightbox.setAttribute("aria-hidden", "true");
       lightboxImg.src = "";
-      if (currentFilter === "all") {
-        try { tg?.BackButton?.hide?.(); } catch (_) {}
-      }
+      updateTelegramButtons();
     }
-
-    function setFilter(nextFilter) {
-      currentFilter = nextFilter || "all";
-      document.querySelectorAll(".tab").forEach((x) => {
-        const isActive = (x.dataset.filter || "all") === currentFilter;
-        x.classList.toggle("active", isActive);
+    function setSection(name) {
+      currentSection = name || "overview";
+      sectionButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.section === currentSection));
+      document.querySelectorAll(".section").forEach((section) => {
+        section.classList.toggle("active", section.id === `section-${currentSection}`);
       });
       updateTelegramButtons();
-      renderRows();
     }
-
+    function setFilter(name) {
+      currentFilter = name || "all";
+      filterButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.filter === currentFilter));
+      renderRows();
+      updateTelegramButtons();
+    }
     function updateTelegramButtons() {
       if (!tg) return;
-      const isRoot = currentFilter === "all";
-      try { if (isRoot) tg.BackButton.hide(); else tg.BackButton.show(); } catch (_) {}
+      const lightboxOpen = Boolean(lightbox && lightbox.classList.contains("open"));
+      const atRoot = currentSection === "overview" && currentFilter === "all" && !lightboxOpen;
+      try { if (atRoot) tg.BackButton.hide(); else tg.BackButton.show(); } catch (_) {}
       try {
+        const text = atRoot ? "Закрыть" : "Назад";
         if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
-          tg.SecondaryButton.setParams({ text: isRoot ? "Закрыть" : "Сбросить фильтр", is_visible: true, position: "left" });
+          tg.SecondaryButton.setParams({ text, is_visible: true, position: "left" });
         } else if (tg.SecondaryButton) {
-          tg.SecondaryButton.setText(isRoot ? "Закрыть" : "Сбросить фильтр");
+          tg.SecondaryButton.setText(text);
           tg.SecondaryButton.show();
         }
       } catch (_) {}
     }
-
+    function handleBackAction() {
+      if (lightbox && lightbox.classList.contains("open")) { closeLightbox(); return; }
+      if (currentFilter !== "all" && currentSection === "reviews") { setFilter("all"); return; }
+      if (currentSection !== "overview") { setSection("overview"); return; }
+      try { tg?.close?.(); } catch (_) {}
+    }
     function initTelegramMiniApp() {
       if (!tg) return;
       tg.ready();
@@ -538,69 +720,45 @@
       try {
         const p = tg.themeParams || {};
         if (tg.MainButton && tg.MainButton.setParams) {
-          tg.MainButton.setParams({ text: "Обновить", is_visible: true, color: p.button_color || "#676d79", text_color: p.button_text_color || "#ffffff" });
-        } else if (tg.MainButton) {
-          tg.MainButton.setText("Обновить");
-          tg.MainButton.show();
+          tg.MainButton.setParams({ text: "Обновить", is_visible: true, color: p.button_color || "#5b6577", text_color: p.button_text_color || "#ffffff" });
         }
       } catch (_) {}
       updateTelegramButtons();
-
       try {
         tg.onEvent("themeChanged", applyTelegramTheme);
         tg.onEvent("viewportChanged", applyTelegramViewport);
         tg.onEvent("safeAreaChanged", applyTelegramViewport);
         tg.onEvent("contentSafeAreaChanged", applyTelegramViewport);
-        tg.onEvent("fullscreenChanged", applyTelegramViewport);
         tg.onEvent("activated", fetchData);
-        tg.onEvent("backButtonClicked", () => {
-          if (lightbox && lightbox.classList.contains("open")) return closeLightbox();
-          if (currentFilter === "all") return tg.close();
-          telegramHapticSelection();
-          setFilter("all");
-        });
-        tg.onEvent("secondaryButtonClicked", () => {
-          if (lightbox && lightbox.classList.contains("open")) return closeLightbox();
-          telegramHapticSelection();
-          if (currentFilter === "all") return tg.close();
-          setFilter("all");
-        });
-        tg.onEvent("mainButtonClicked", () => {
-          telegramHapticImpact();
-          fetchData();
-        });
+        tg.onEvent("backButtonClicked", () => { hapticSelection(); handleBackAction(); });
+        tg.onEvent("secondaryButtonClicked", () => { hapticSelection(); handleBackAction(); });
+        tg.onEvent("mainButtonClicked", () => { hapticImpact(); fetchData(); });
       } catch (_) {}
     }
-
-    function renderMetrics(stats) {
-      const all = Number(stats.all_reviews || 0);
-      const pos = Number(stats.positive_reviews || 0);
-      const neg = Number(stats.negative_reviews || 0);
-      const rate = Number(stats.positive_rate || 0);
-      const neutral = Number(stats.neutral_reviews || 0);
-
-      document.getElementById("mAll").textContent = all.toLocaleString("ru-RU");
-      document.getElementById("mPos").textContent = pos.toLocaleString("ru-RU");
-      document.getElementById("mNeg").textContent = neg.toLocaleString("ru-RU");
-      document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
-
-      const neutralTab = document.querySelector('.tab[data-filter="neutral"]');
-      if (neutralTab) neutralTab.style.display = neutral > 0 ? "" : "none";
-      if (neutral <= 0 && currentFilter === "neutral") setFilter("all");
-    }
-
     function normalizeProductName(value) {
       let text = String(value || "Товар").trim();
       text = text.replace(/[:\s-]*#\d+\s*$/u, "").trim();
       text = text.replace(/\s{2,}/g, " ");
       return text || "Товар";
     }
-
+    function renderMetrics(stats) {
+      const all = Number(stats.all_reviews || 0);
+      const pos = Number(stats.positive_reviews || 0);
+      const neg = Number(stats.negative_reviews || 0);
+      const rate = Number(stats.positive_rate || 0);
+      const neutral = Number(stats.neutral_reviews || 0);
+      document.getElementById("mAll").textContent = all.toLocaleString("ru-RU");
+      document.getElementById("mPos").textContent = pos.toLocaleString("ru-RU");
+      document.getElementById("mNeg").textContent = neg.toLocaleString("ru-RU");
+      document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
+      const neutralBtn = document.querySelector('.filter-btn[data-filter="neutral"]');
+      if (neutralBtn) neutralBtn.style.display = neutral > 0 ? "" : "none";
+      if (neutral <= 0 && currentFilter === "neutral") setFilter("all");
+    }
     function filteredRows() {
       if (currentFilter === "all") return rows;
       return rows.filter((r) => String(r.rating || "") === currentFilter);
     }
-
     function renderRows() {
       const list = document.getElementById("reviewsList");
       const view = filteredRows();
@@ -608,7 +766,6 @@
         list.innerHTML = '<div class="row"><div class="line3">Записей пока нет.</div></div>';
         return;
       }
-
       list.innerHTML = view.map((row) => {
         const rating = String(row.rating || "neutral");
         const cls = rating === "positive" ? "good" : (rating === "negative" ? "bad" : "mid");
@@ -617,38 +774,20 @@
         const postUrl = String(row.post_url || "").trim();
         const photoUrl = String(row.photo_url || "").trim();
         const itemId = Number(row.purchase_id || 0);
-
         const productName = esc(normalizeProductName(row.product_name || "Товар"));
         const productCore = postUrl
           ? `<a class="product-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
           : `<span>${productName}</span>`;
         const idHtml = itemId > 0 ? `<span class="item-chip">#${itemId}</span>` : "";
-        const postLink = postUrl
-          ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>`
-          : "";
-
+        const postLink = postUrl ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>` : "";
         let media = "";
         if (photoUrl) {
           media = `<details class="media"><summary>Открыть фото из поста</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`;
         } else if (postUrl) {
           media = `<details class="media"><summary>Открыть пост</summary>${postLink}</details>`;
         }
-
-        return `
-          <div class="row">
-            <div class="line1">
-              <div>${esc(row.user_alias || "Пользователь")}</div>
-              <div>${esc(fmtDate(row.created_at))}</div>
-            </div>
-            <div class="line2">
-              <div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div>
-              <div class="badge ${cls}">${esc(row.rating_label || rating)}</div>
-            </div>
-            ${extra}
-            ${media}
-          </div>`;
+        return `<div class="row"><div class="line1"><div>${esc(row.user_alias || "Пользователь")}</div><div>${esc(fmtDate(row.created_at))}</div></div><div class="line2"><div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div><div class="badge ${cls}">${esc(row.rating_label || rating)}</div></div>${extra}${media}</div>`;
       }).join("");
-
       list.querySelectorAll("img.review-photo").forEach((img) => {
         img.addEventListener("error", () => {
           img.style.display = "none";
@@ -659,37 +798,12 @@
           note.textContent = "Фото временно недоступно. Открой пост по ссылке выше.";
           box.appendChild(note);
         });
-
         img.addEventListener("click", (event) => {
           event.preventDefault();
-          const src = img.dataset.photo || img.getAttribute("src") || "";
-          openLightbox(src);
+          openLightbox(img.dataset.photo || img.getAttribute("src") || "");
         });
       });
     }
-
-    function bindTabs() {
-      document.querySelectorAll(".tab").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          telegramHapticSelection();
-          setFilter(btn.dataset.filter || "all");
-        });
-      });
-    }
-
-    function bindLightbox() {
-      if (!lightbox) return;
-      lightbox.addEventListener("click", (event) => {
-        if (event.target === lightbox) closeLightbox();
-      });
-      if (lightboxClose) {
-        lightboxClose.addEventListener("click", () => closeLightbox());
-      }
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") closeLightbox();
-      });
-    }
-
     async function fetchData() {
       const status = document.getElementById("statusLine");
       status.textContent = "Обновляю...";
@@ -706,10 +820,26 @@
         status.textContent = `Ошибка загрузки: ${err}`;
       }
     }
-
+    function bindUI() {
+      sectionButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          hapticSelection();
+          setSection(btn.dataset.section || "overview");
+        });
+      });
+      filterButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          hapticSelection();
+          setFilter(btn.dataset.filter || "all");
+          setSection("reviews");
+        });
+      });
+      lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+      lightboxClose.addEventListener("click", () => closeLightbox());
+      document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeLightbox(); });
+    }
     initTelegramMiniApp();
-    bindTabs();
-    bindLightbox();
+    bindUI();
     fetchData();
     setInterval(fetchData, 30000);
   </script>
