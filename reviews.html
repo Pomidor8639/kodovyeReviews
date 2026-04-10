@@ -269,12 +269,12 @@
     }
 
     .media summary::before {
-      content: "> ";
+      content: "▸ ";
       color: #d4d9e8;
     }
 
     .media[open] summary::before {
-      content: "v ";
+      content: "▾ ";
     }
 
     .media img {
@@ -287,6 +287,13 @@
       margin: 8px auto 0;
       cursor: zoom-in;
       image-rendering: auto;
+    }
+
+    .img-fail {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
     }
 
     .lightbox {
@@ -662,9 +669,15 @@
           ? `<a class="product-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
           : `<span>${productName}</span>`;
         const idHtml = itemId > 0 ? `<span class="item-chip">#${itemId}</span>` : "";
-        const media = photoUrl
-          ? `<details class="media"><summary>Открыть фото из поста</summary><a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`
+        const postLink = postUrl
+          ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>`
           : "";
+        let media = "";
+        if (photoUrl) {
+          media = `<details class="media"><summary>Открыть фото из поста</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`;
+        } else if (postUrl) {
+          media = `<details class="media"><summary>Открыть пост</summary>${postLink}</details>`;
+        }
         return `
           <div class="row">
             <div class="line1">
@@ -681,6 +694,15 @@
       }).join("");
 
       list.querySelectorAll("img.review-photo").forEach((img) => {
+        img.addEventListener("error", () => {
+          img.style.display = "none";
+          const box = img.closest("details.media");
+          if (!box || box.querySelector(".img-fail")) return;
+          const note = document.createElement("div");
+          note.className = "img-fail";
+          note.textContent = "Фото временно недоступно. Открой пост по ссылке выше.";
+          box.appendChild(note);
+        });
         img.addEventListener("click", (event) => {
           event.preventDefault();
           const src = img.dataset.photo || img.getAttribute("src") || "";
