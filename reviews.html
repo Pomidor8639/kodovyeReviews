@@ -242,6 +242,7 @@
       color: var(--accent);
       text-decoration: none;
       border-bottom: 1px dashed rgba(207, 213, 227, 0.52);
+      margin-right: 10px;
     }
 
     .post-link:hover {
@@ -262,6 +263,7 @@
       font-size: 12px;
       user-select: none;
       list-style: none;
+      margin-bottom: 5px;
     }
 
     .media summary::-webkit-details-marker {
@@ -403,6 +405,7 @@
     <div class="list" id="reviewsList"></div>
     <div class="status" id="statusLine">Загрузка...</div>
   </div>
+
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <button class="lightbox-close" id="lightboxClose" type="button">Закрыть</button>
     <img id="lightboxImg" alt="Полное фото" />
@@ -412,6 +415,7 @@
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     let currentFilter = "all";
     let rows = [];
+
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxClose = document.getElementById("lightboxClose");
@@ -448,25 +452,15 @@
 
       try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
       try { tg.setBackgroundColor("bg_color"); } catch (_) {}
-      try {
-        if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.10")) {
-          tg.setBottomBarColor("secondary_bg_color");
-        }
-      } catch (_) {}
+      try { if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.10")) tg.setBottomBarColor("secondary_bg_color"); } catch (_) {}
       try {
         if (tg.MainButton && tg.MainButton.setParams) {
-          tg.MainButton.setParams({
-            color: p.button_color || "#676d79",
-            text_color: p.button_text_color || "#ffffff",
-          });
+          tg.MainButton.setParams({ color: p.button_color || "#676d79", text_color: p.button_text_color || "#ffffff" });
         }
       } catch (_) {}
       try {
         if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
-          tg.SecondaryButton.setParams({
-            color: p.secondary_bg_color || "#2f3340",
-            text_color: p.text_color || "#f2f4f8",
-          });
+          tg.SecondaryButton.setParams({ color: p.secondary_bg_color || "#2f3340", text_color: p.text_color || "#f2f4f8" });
         }
       } catch (_) {}
     }
@@ -480,7 +474,6 @@
       setCssVar("--safe-right", `${Number(contentInset.right || 0)}px`);
       setCssVar("--safe-bottom", `${Number(contentInset.bottom || 0)}px`);
       setCssVar("--safe-left", `${Number(contentInset.left || 0)}px`);
-
       const h = Number(tg.viewportStableHeight || tg.viewportHeight || 0);
       if (h > 0) setCssVar("--app-height", `${h}px`);
     }
@@ -525,19 +518,10 @@
     function updateTelegramButtons() {
       if (!tg) return;
       const isRoot = currentFilter === "all";
-
-      try {
-        if (isRoot) tg.BackButton.hide();
-        else tg.BackButton.show();
-      } catch (_) {}
-
+      try { if (isRoot) tg.BackButton.hide(); else tg.BackButton.show(); } catch (_) {}
       try {
         if (tg.SecondaryButton && tg.SecondaryButton.setParams) {
-          tg.SecondaryButton.setParams({
-            text: isRoot ? "Закрыть" : "Сбросить фильтр",
-            is_visible: true,
-            position: "left",
-          });
+          tg.SecondaryButton.setParams({ text: isRoot ? "Закрыть" : "Сбросить фильтр", is_visible: true, position: "left" });
         } else if (tg.SecondaryButton) {
           tg.SecondaryButton.setText(isRoot ? "Закрыть" : "Сбросить фильтр");
           tg.SecondaryButton.show();
@@ -551,32 +535,17 @@
       tg.expand();
       applyTelegramTheme();
       applyTelegramViewport();
-
       try {
         const p = tg.themeParams || {};
         if (tg.MainButton && tg.MainButton.setParams) {
-          tg.MainButton.setParams({
-            text: "Обновить",
-            is_visible: true,
-            color: p.button_color || "#676d79",
-            text_color: p.button_text_color || "#ffffff",
-          });
+          tg.MainButton.setParams({ text: "Обновить", is_visible: true, color: p.button_color || "#676d79", text_color: p.button_text_color || "#ffffff" });
         } else if (tg.MainButton) {
           tg.MainButton.setText("Обновить");
           tg.MainButton.show();
         }
       } catch (_) {}
       updateTelegramButtons();
-      try {
-        if (tg.isVersionAtLeast && tg.isVersionAtLeast("7.7")) {
-          tg.enableVerticalSwipes();
-        }
-      } catch (_) {}
-      try {
-        if (tg.isVersionAtLeast && tg.isVersionAtLeast("8.0") && !tg.isFullscreen) {
-          tg.requestFullscreen();
-        }
-      } catch (_) {}
+
       try {
         tg.onEvent("themeChanged", applyTelegramTheme);
         tg.onEvent("viewportChanged", applyTelegramViewport);
@@ -585,27 +554,15 @@
         tg.onEvent("fullscreenChanged", applyTelegramViewport);
         tg.onEvent("activated", fetchData);
         tg.onEvent("backButtonClicked", () => {
-          if (lightbox && lightbox.classList.contains("open")) {
-            closeLightbox();
-            return;
-          }
-          if (currentFilter === "all") {
-            try { tg.close(); } catch (_) {}
-            return;
-          }
+          if (lightbox && lightbox.classList.contains("open")) return closeLightbox();
+          if (currentFilter === "all") return tg.close();
           telegramHapticSelection();
           setFilter("all");
         });
         tg.onEvent("secondaryButtonClicked", () => {
-          if (lightbox && lightbox.classList.contains("open")) {
-            closeLightbox();
-            return;
-          }
+          if (lightbox && lightbox.classList.contains("open")) return closeLightbox();
           telegramHapticSelection();
-          if (currentFilter === "all") {
-            try { tg.close(); } catch (_) {}
-            return;
-          }
+          if (currentFilter === "all") return tg.close();
           setFilter("all");
         });
         tg.onEvent("mainButtonClicked", () => {
@@ -628,12 +585,8 @@
       document.getElementById("mRate").textContent = `${rate.toFixed(2)}%`;
 
       const neutralTab = document.querySelector('.tab[data-filter="neutral"]');
-      if (neutralTab) {
-        neutralTab.style.display = neutral > 0 ? "" : "none";
-      }
-      if (neutral <= 0 && currentFilter === "neutral") {
-        setFilter("all");
-      }
+      if (neutralTab) neutralTab.style.display = neutral > 0 ? "" : "none";
+      if (neutral <= 0 && currentFilter === "neutral") setFilter("all");
     }
 
     function normalizeProductName(value) {
@@ -664,6 +617,7 @@
         const postUrl = String(row.post_url || "").trim();
         const photoUrl = String(row.photo_url || "").trim();
         const itemId = Number(row.purchase_id || 0);
+
         const productName = esc(normalizeProductName(row.product_name || "Товар"));
         const productCore = postUrl
           ? `<a class="product-link" href="${esc(postUrl)}" target="_blank" rel="noopener">${productName}</a>`
@@ -672,12 +626,14 @@
         const postLink = postUrl
           ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>`
           : "";
+
         let media = "";
         if (photoUrl) {
           media = `<details class="media"><summary>Открыть фото из поста</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`;
         } else if (postUrl) {
           media = `<details class="media"><summary>Открыть пост</summary>${postLink}</details>`;
         }
+
         return `
           <div class="row">
             <div class="line1">
@@ -703,6 +659,7 @@
           note.textContent = "Фото временно недоступно. Открой пост по ссылке выше.";
           box.appendChild(note);
         });
+
         img.addEventListener("click", (event) => {
           event.preventDefault();
           const src = img.dataset.photo || img.getAttribute("src") || "";
@@ -723,17 +680,13 @@
     function bindLightbox() {
       if (!lightbox) return;
       lightbox.addEventListener("click", (event) => {
-        if (event.target === lightbox) {
-          closeLightbox();
-        }
+        if (event.target === lightbox) closeLightbox();
       });
       if (lightboxClose) {
         lightboxClose.addEventListener("click", () => closeLightbox());
       }
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeLightbox();
-        }
+        if (event.key === "Escape") closeLightbox();
       });
     }
 
