@@ -166,34 +166,15 @@
       padding: 12px;
       margin-bottom: 10px;
     }
-    #section-overview {
-      background:
-        linear-gradient(168deg, rgba(126, 220, 255, 0.22), rgba(84, 147, 255, 0.08)),
-        rgba(11, 33, 65, 0.66);
-    }
-    #section-prices {
-      background:
-        linear-gradient(168deg, rgba(255, 206, 130, 0.22), rgba(255, 150, 108, 0.08)),
-        rgba(44, 28, 34, 0.66);
-      border-color: rgba(255, 194, 124, 0.28);
-    }
-    #section-reviews {
-      background:
-        linear-gradient(168deg, rgba(129, 178, 255, 0.22), rgba(91, 130, 255, 0.08)),
-        rgba(22, 34, 74, 0.66);
-      border-color: rgba(128, 173, 255, 0.3);
-    }
-    #section-support {
-      background:
-        linear-gradient(168deg, rgba(120, 234, 182, 0.22), rgba(83, 178, 138, 0.08)),
-        rgba(19, 46, 40, 0.66);
-      border-color: rgba(118, 231, 181, 0.28);
-    }
+    #section-overview,
+    #section-prices,
+    #section-reviews,
+    #section-support,
     #section-docs {
       background:
-        linear-gradient(168deg, rgba(191, 147, 255, 0.22), rgba(152, 106, 255, 0.08)),
-        rgba(35, 30, 73, 0.66);
-      border-color: rgba(183, 138, 255, 0.29);
+        linear-gradient(168deg, rgba(119, 205, 255, 0.16), rgba(80, 132, 255, 0.05)),
+        var(--bg-soft);
+      border-color: var(--line-soft);
     }
     .section.active {
       display: block;
@@ -757,10 +738,12 @@
       transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
     }
     .nav-btn.active {
-      color: #05101a;
-      border-color: rgba(255, 255, 255, 0.16);
-      background: linear-gradient(180deg, #f8fbff 0%, #e9eef6 100%);
-      box-shadow: 0 14px 30px rgba(255, 255, 255, 0.08);
+      color: #eaf4ff;
+      border-color: rgba(126, 212, 255, 0.36);
+      background:
+        linear-gradient(180deg, rgba(118, 208, 240, 0.26), rgba(118, 208, 240, 0.1)),
+        rgba(18, 44, 78, 0.8);
+      box-shadow: inset 0 0 0 1px rgba(118, 208, 240, 0.16), 0 12px 24px rgba(0, 0, 0, 0.22);
     }
     .nav-btn:hover {
       transform: translateY(-1px);
