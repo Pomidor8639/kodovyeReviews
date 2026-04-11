@@ -1086,14 +1086,15 @@
     function applyTelegramTheme() {
       if (!tg) return;
       const p = tg.themeParams || {};
-      setCssVar("--bg", p.bg_color || "#091018");
-      setCssVar("--bg-soft", p.secondary_bg_color || "rgba(10, 18, 28, 0.94)");
+      // Keep branded background colors fixed and do not inherit Telegram gray theme.
+      setCssVar("--bg", "#091018");
+      setCssVar("--bg-soft", "rgba(10, 18, 28, 0.94)");
       setCssVar("--text", p.text_color || "#f4f7fb");
       setCssVar("--muted", p.hint_color || "#91a1b2");
       setCssVar("--accent", p.accent_text_color || "#76d0f0");
       if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
-      try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
-      try { tg.setBackgroundColor("bg_color"); } catch (_) {}
+      try { tg.setHeaderColor("#0c1622"); } catch (_) {}
+      try { tg.setBackgroundColor("#091018"); } catch (_) {}
       try {
         if (tg.MainButton && tg.MainButton.setParams) {
           tg.MainButton.setParams({ color: p.button_color || "#5b6577", text_color: p.button_text_color || "#ffffff" });
