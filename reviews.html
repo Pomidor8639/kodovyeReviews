@@ -7,16 +7,16 @@
   <script src="https://telegram.org/js/telegram-web-app.js?62"></script>
   <style>
     :root {
-      --bg: #0f1116;
-      --bg-soft: #181c24;
-      --line: rgba(255, 255, 255, 0.14);
-      --line-soft: rgba(255, 255, 255, 0.09);
-      --text: #f2f5fb;
-      --muted: #a9b1c2;
+      --bg: #09152b;
+      --bg-soft: #10203d;
+      --line: rgba(116, 190, 255, 0.28);
+      --line-soft: rgba(116, 190, 255, 0.16);
+      --text: #f4f8ff;
+      --muted: #aac5e8;
       --good: #84dfaa;
       --bad: #ff9f9f;
-      --mid: #f0d59a;
-      --accent: #d7deee;
+      --mid: #ffd98f;
+      --accent: #8ad7ff;
       --safe-top: 0px;
       --safe-top-fallback: env(safe-area-inset-top, 0px);
       --safe-right: 0px;
@@ -34,9 +34,9 @@
       color: var(--text);
       font-family: "SF Pro Text", "Segoe UI", Arial, sans-serif;
       background:
-        radial-gradient(900px 360px at -10% -10%, rgba(255, 255, 255, 0.12), transparent 55%),
-        radial-gradient(760px 340px at 115% -15%, rgba(255, 255, 255, 0.08), transparent 52%),
-        linear-gradient(168deg, #0e1015 0%, #151923 46%, #1a202c 100%);
+        radial-gradient(900px 360px at -10% -10%, rgba(0, 214, 255, 0.2), transparent 55%),
+        radial-gradient(760px 340px at 115% -15%, rgba(57, 137, 255, 0.18), transparent 52%),
+        linear-gradient(168deg, #081121 0%, #10254a 46%, #142f5b 100%);
     }
     body {
       min-height: var(--app-height);
@@ -56,8 +56,8 @@
       padding: 14px;
       margin-bottom: 10px;
       background:
-        linear-gradient(155deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.18));
+        linear-gradient(155deg, rgba(96, 214, 255, 0.32), rgba(87, 137, 255, 0.08)),
+        linear-gradient(180deg, rgba(9, 22, 48, 0.72), rgba(5, 12, 28, 0.8));
       box-shadow: 0 16px 38px rgba(0, 0, 0, 0.34);
     }
     .title {
@@ -82,8 +82,8 @@
       border-radius: 999px;
       border: 1px solid var(--line-soft);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-        #1c212b;
+        linear-gradient(180deg, rgba(84, 200, 255, 0.26), rgba(60, 124, 255, 0.12)),
+        #163259;
       color: var(--text);
       font-size: 13px;
       font-weight: 700;
@@ -95,8 +95,8 @@
     .nav-btn.active {
       border-color: rgba(255, 255, 255, 0.32);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.04)),
-        #2a303b;
+        linear-gradient(180deg, rgba(109, 222, 255, 0.46), rgba(90, 130, 255, 0.2)),
+        #1f4380;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
     }
     .section {
@@ -104,7 +104,7 @@
       border: 1px solid var(--line-soft);
       border-radius: 14px;
       background:
-        linear-gradient(168deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015)),
+        linear-gradient(168deg, rgba(119, 205, 255, 0.16), rgba(80, 132, 255, 0.05)),
         var(--bg-soft);
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
       padding: 12px;
@@ -137,8 +137,8 @@
       padding: 10px;
       min-height: 72px;
       background:
-        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02)),
-        rgba(255, 255, 255, 0.03);
+        linear-gradient(170deg, rgba(116, 200, 255, 0.24), rgba(80, 122, 255, 0.08)),
+        rgba(10, 28, 56, 0.4);
     }
     .k {
       color: var(--muted);
@@ -159,8 +159,8 @@
       border: 1px solid var(--line-soft);
       border-radius: 12px;
       background:
-        linear-gradient(170deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
-        rgba(255, 255, 255, 0.03);
+        linear-gradient(170deg, rgba(118, 211, 255, 0.24), rgba(82, 128, 255, 0.08)),
+        rgba(9, 27, 56, 0.42);
       padding: 11px;
     }
     .price-title {
@@ -191,7 +191,7 @@
       border-bottom: 1px solid var(--line-soft);
       padding: 10px 12px;
       font-size: 14px;
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(11, 31, 63, 0.5);
     }
     .price-row:last-child {
       border-bottom: none;
@@ -210,8 +210,8 @@
       border-radius: 12px;
       padding: 12px;
       background:
-        linear-gradient(170deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.015)),
-        rgba(255, 255, 255, 0.03);
+        linear-gradient(170deg, rgba(123, 213, 255, 0.28), rgba(84, 135, 255, 0.1)),
+        rgba(10, 32, 64, 0.45);
     }
     .support-link {
       margin-top: 10px;
@@ -226,8 +226,8 @@
       text-decoration: none;
       font-weight: 700;
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.05)),
-        #2b3240;
+        linear-gradient(180deg, rgba(122, 218, 255, 0.62), rgba(82, 133, 255, 0.28)),
+        #24538c;
     }
     .doc-list {
       margin-top: 10px;
@@ -237,7 +237,7 @@
     details.doc {
       border: 1px solid var(--line-soft);
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(13, 35, 68, 0.5);
       overflow: hidden;
     }
     details.doc summary {
@@ -280,8 +280,8 @@
       border-radius: 999px;
       border: 1px solid var(--line-soft);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-        #1f2430;
+        linear-gradient(180deg, rgba(102, 197, 255, 0.24), rgba(77, 120, 255, 0.1)),
+        #173a67;
       color: var(--text);
       font-size: 13px;
       font-weight: 700;
@@ -292,16 +292,16 @@
     .filter-btn.active {
       border-color: rgba(255, 255, 255, 0.3);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05)),
-        #2a313e;
+        linear-gradient(180deg, rgba(114, 213, 255, 0.5), rgba(89, 132, 255, 0.22)),
+        #22508d;
     }
     .list {
       border: 1px solid var(--line-soft);
       border-radius: 12px;
       overflow: hidden;
       background:
-        linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)),
-        rgba(255, 255, 255, 0.03);
+        linear-gradient(165deg, rgba(119, 206, 255, 0.15), rgba(82, 129, 255, 0.05)),
+        rgba(10, 30, 58, 0.45);
     }
     .row {
       padding: 12px;
@@ -340,7 +340,7 @@
       min-width: 0;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(94, 184, 255, 0.22);
       padding: 3px 9px;
       color: #d7ddef;
       font-weight: 620;
@@ -358,7 +358,7 @@
     .item-chip {
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(70, 135, 255, 0.2);
       padding: 2px 8px;
       color: #c4cad9;
       font-size: 12px;
@@ -383,7 +383,7 @@
       border: 1px solid var(--line-soft);
       border-radius: 10px;
       padding: 7px 8px;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(14, 39, 76, 0.55);
     }
     .media summary {
       cursor: pointer;
@@ -442,7 +442,7 @@
       align-items: center;
       justify-content: center;
       padding: 14px;
-      background: rgba(7, 9, 12, 0.9);
+      background: rgba(4, 12, 26, 0.9);
       backdrop-filter: blur(4px);
     }
     .lightbox.open {
@@ -633,11 +633,11 @@
     function applyTelegramTheme() {
       if (!tg) return;
       const p = tg.themeParams || {};
-      setCssVar("--bg", p.bg_color || "#0f1116");
-      setCssVar("--bg-soft", p.secondary_bg_color || "#181c24");
-      setCssVar("--text", p.text_color || "#f2f5fb");
-      setCssVar("--muted", p.hint_color || "#a9b1c2");
-      setCssVar("--accent", p.accent_text_color || "#d7deee");
+      setCssVar("--bg", p.bg_color || "#09152b");
+      setCssVar("--bg-soft", p.secondary_bg_color || "#10203d");
+      setCssVar("--text", p.text_color || "#f4f8ff");
+      setCssVar("--muted", p.hint_color || "#aac5e8");
+      setCssVar("--accent", p.accent_text_color || "#8ad7ff");
       if (p.destructive_text_color) setCssVar("--bad", p.destructive_text_color);
       try { tg.setHeaderColor("secondary_bg_color"); } catch (_) {}
       try { tg.setBackgroundColor("bg_color"); } catch (_) {}
