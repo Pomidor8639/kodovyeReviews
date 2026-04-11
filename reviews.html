@@ -85,7 +85,7 @@
     }
     .section-nav {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
       margin: 10px 0 12px;
     }
@@ -169,8 +169,7 @@
     #section-overview,
     #section-prices,
     #section-reviews,
-    #section-support,
-    #section-docs {
+    #section-support {
       background:
         linear-gradient(168deg, rgba(119, 205, 255, 0.16), rgba(80, 132, 255, 0.05)),
         var(--bg-soft);
@@ -726,7 +725,7 @@
     .section-nav {
       gap: 10px;
       margin: 14px 0;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
     .nav-btn {
       min-height: 42px;
@@ -756,8 +755,7 @@
     #section-overview,
     #section-prices,
     #section-reviews,
-    #section-support,
-    #section-docs {
+    #section-support {
       border-color: rgba(255, 255, 255, 0.08);
       background: linear-gradient(180deg, rgba(14, 21, 31, 0.98) 0%, rgba(8, 13, 20, 0.95) 100%);
     }
@@ -950,7 +948,7 @@
   <div class="wrap">
     <header class="hero">
       <h1 class="title">Kodovye Market</h1>
-      <p class="sub">Каталог аккаунтов, витрина отзывов, поддержка и документы в одном мини-приложении.</p>
+      <p class="sub">Каталог аккаунтов, витрина отзывов и техподдержка в одном мини-приложении.</p>
     </header>
 
     <nav class="section-nav" aria-label="Разделы">
@@ -958,7 +956,6 @@
       <button class="nav-btn" data-section="prices" type="button">Цены</button>
       <button class="nav-btn" data-section="reviews" type="button">Отзывы</button>
       <button class="nav-btn" data-section="support" type="button">Техподдержка</button>
-      <button class="nav-btn" data-section="docs" type="button">Документы</button>
     </nav>
 
     <section class="section active" id="section-overview">
@@ -979,7 +976,7 @@
         <article class="price-card">
           <div class="price-title">ChatGPT Plus аккаунт</div>
           <div class="price-value">от 160 ₽</div>
-          <div class="price-note">Минимальный порог для покупателя. Бот подбирает самый выгодный лот автоматически.</div>
+          <div class="price-note">Актуальная цена и детали покупки подтверждаются в боте перед оплатой.</div>
         </article>
         <article class="price-card">
           <div class="price-title">Telegram аккаунт</div>
@@ -1018,36 +1015,6 @@
       </div>
     </section>
 
-    <section class="section" id="section-docs">
-      <h2>Документы</h2>
-      <p>Правила работы сервиса, обработка данных и условия использования.</p>
-      <div class="doc-list">
-        <details class="doc">
-          <summary>Политика конфиденциальности</summary>
-          <div class="doc-body">1. Сервис хранит только данные, необходимые для обработки заказов: Telegram ID, историю покупок и статусы платежей.
-2. Персональные данные не передаются третьим лицам, кроме платежных провайдеров в рамках обработки платежа.
-3. Пользователь может запросить удаление данных, обратившись в техподдержку.</div>
-        </details>
-        <details class="doc">
-          <summary>Пользовательское соглашение</summary>
-          <div class="doc-body">1. Пользователь обязуется использовать сервис в рамках действующего законодательства.
-2. Оплата означает согласие с текущими условиями и ценами.
-3. Администрация вправе обновлять функционал и условия сервиса без отдельного уведомления.</div>
-        </details>
-        <details class="doc">
-          <summary>Условия оплаты и возврата</summary>
-          <div class="doc-body">1. Сумма к оплате отображается до создания счета.
-2. Если активна подписка на канал, применяется скидка к сумме платежа.
-3. Возврат рассматривается индивидуально через техподдержку при наличии подтверждающих данных.</div>
-        </details>
-        <details class="doc">
-          <summary>Публичная оферта по цифровым товарам</summary>
-          <div class="doc-body">1. Предмет оферты: предоставление цифровых данных по приобретенному товару.
-2. Момент исполнения: передача данных в чат бота после успешной оплаты.
-3. Поддержка по сделке предоставляется в рабочем чате техподдержки.</div>
-        </details>
-      </div>
-    </section>
   </div>
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -1236,21 +1203,31 @@
         const postLink = postUrl ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>` : "";
         let media = "";
         if (photoUrl) {
-          media = `<details class="media"><summary>Открыть фото из поста</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Фото к отзыву" /></details>`;
+          media = `<details class="media"><summary>Посмотреть скриншот</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Скриншот к отзыву" /></details>`;
         } else if (postUrl) {
           media = `<details class="media"><summary>Открыть пост</summary>${postLink}</details>`;
         }
         return `<div class="row"><div class="line1"><div>${esc(row.user_alias || "Пользователь")}</div><div>${esc(fmtDate(row.created_at))}</div></div><div class="line2"><div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div><div class="badge ${cls}">${esc(row.rating_label || rating)}</div></div>${extra}${media}</div>`;
       }).join("");
+      const onImageFail = (img) => {
+        if (!img) return;
+        img.style.display = "none";
+        const box = img.closest("details.media");
+        if (!box || box.querySelector(".img-fail")) return;
+        const note = document.createElement("div");
+        note.className = "img-fail";
+        note.textContent = "Скриншот временно недоступен. Открой пост по ссылке выше.";
+        box.appendChild(note);
+      };
       list.querySelectorAll("img.review-photo").forEach((img) => {
         img.addEventListener("error", () => {
-          img.style.display = "none";
-          const box = img.closest("details.media");
-          if (!box || box.querySelector(".img-fail")) return;
-          const note = document.createElement("div");
-          note.className = "img-fail";
-          note.textContent = "Фото временно недоступно. Открой пост по ссылке выше.";
-          box.appendChild(note);
+          onImageFail(img);
+        });
+        if (img.complete && Number(img.naturalWidth || 0) <= 0) {
+          onImageFail(img);
+        }
+        img.addEventListener("load", () => {
+          img.style.display = "";
         });
         img.addEventListener("click", (event) => {
           event.preventDefault();
