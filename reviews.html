@@ -658,13 +658,22 @@
       color-scheme: dark;
     }
     body {
+      position: relative;
       font-family: "Manrope", sans-serif;
+      background: #091018;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
       background:
         radial-gradient(circle at 12% 0%, rgba(118, 208, 240, 0.12), transparent 26%),
         radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.05), transparent 18%),
         linear-gradient(180deg, #05090f 0%, #091018 42%, #0a131d 100%);
     }
-    body::before {
+    body::after {
       content: "";
       position: fixed;
       inset: 0;
