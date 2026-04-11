@@ -960,7 +960,7 @@
 
     <section class="section active" id="section-overview">
       <h2>Общая статистика</h2>
-      <p>Ниже отображается сводка по отзывам и сделкам из публичного канала.</p>
+      <p>Ниже отображается сводка по отзывам и сделкам.</p>
       <div class="metrics">
         <div class="metric"><div class="k">Все отзывы</div><div class="v" id="mAll">0</div></div>
         <div class="metric"><div class="k">Позитивные</div><div class="v" id="mPos">0</div></div>
@@ -1009,7 +1009,7 @@
       <p>Если после пополнения или покупки возник вопрос, напишите оператору. Ответ придет в личные сообщения.</p>
       <div class="support-box">
         <div><strong>Контакт:</strong> @pomidor863x</div>
-        <div style="margin-top:6px; color: var(--muted);">Рекомендуем в сообщении указать ID заказа, сумму и скриншот платежа.</div>
+        <div style="margin-top:6px; color: var(--muted);">Укажи в сообщении ID заказа, сумму и скриншот платежа.</div>
         <a class="support-link" href="https://t.me/pomidor863x" target="_blank" rel="noopener">Открыть техподдержку</a>
       </div>
     </section>
@@ -1025,6 +1025,7 @@
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const sectionButtons = Array.from(document.querySelectorAll(".nav-btn"));
     const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+    const APP_VERSION = new URLSearchParams(window.location.search).get("v") || "";
     let currentSection = "overview";
     let currentFilter = "all";
     let rows = [];
@@ -1048,6 +1049,13 @@
     function setCssVar(name, value) {
       if (!value) return;
       document.documentElement.style.setProperty(name, String(value));
+    }
+    function assetUrl(path) {
+      const url = new URL(path, window.location.href);
+      if (APP_VERSION) {
+        url.searchParams.set("v", APP_VERSION);
+      }
+      return url.toString();
     }
     function applyTelegramTheme() {
       if (!tg) return;
@@ -1238,16 +1246,15 @@
       const status = document.getElementById("statusLine");
       status.textContent = "Обновляю...";
       try {
-        const response = await fetch(`./reviews.json?ts=${Date.now()}`, { cache: "no-store" });
+        const response = await fetch(assetUrl("./reviews.json"), { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const payload = await response.json();
         rows = Array.isArray(payload.items) ? payload.items : [];
         renderMetrics(payload.stats || {});
         renderRows();
-        const platform = tg && tg.platform ? ` • ${tg.platform}` : "";
-        status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}${platform}`;
+        status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
       } catch (err) {
-        status.textContent = `Ошибка загрузки: ${err}`;
+        status.textContent = "Не удалось загрузить отзывы. Попробуй позже.";
       }
     }
     function bindUI() {
