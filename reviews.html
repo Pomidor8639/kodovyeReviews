@@ -961,8 +961,7 @@
     </header>
 
     <nav class="section-nav" aria-label="Разделы">
-      <button class="nav-btn active" data-section="overview" type="button">Обзор</button>
-      <button class="nav-btn" data-section="prices" type="button">Цены</button>
+      <button class="nav-btn active" data-section="prices" type="button">Цены</button>
       <button class="nav-btn" data-section="reviews" type="button">Отзывы</button>
       <button class="nav-btn" data-section="support" type="button">Техподдержка</button>
       <button class="nav-btn" data-section="policy" type="button">Политика</button>
@@ -1056,7 +1055,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const APP_VERSION = urlParams.get("v") || "";
     const SECTION_PARAM = String(urlParams.get("section") || "").trim().toLowerCase();
-    let currentSection = "overview";
+    let currentSection = "prices";
     let currentFilter = "all";
     let rows = [];
     const lightbox = document.getElementById("lightbox");
@@ -1135,7 +1134,7 @@
       updateTelegramButtons();
     }
     function setSection(name) {
-      currentSection = name || "overview";
+      currentSection = name || "prices";
       sectionButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.section === currentSection));
       document.querySelectorAll(".section").forEach((section) => {
         section.classList.toggle("active", section.id === `section-${currentSection}`);
@@ -1144,8 +1143,9 @@
     }
     function normalizeSection(name) {
       const value = String(name || "").toLowerCase();
-      if (["overview", "prices", "reviews", "support", "policy", "agreement"].includes(value)) return value;
-      return "overview";
+      if (value === "overview") return "prices";
+      if (["prices", "reviews", "support", "policy", "agreement"].includes(value)) return value;
+      return "prices";
     }
     function setFilter(name) {
       currentFilter = name || "all";
@@ -1156,7 +1156,7 @@
     function updateTelegramButtons() {
       if (!tg) return;
       const lightboxOpen = Boolean(lightbox && lightbox.classList.contains("open"));
-      const atRoot = currentSection === "overview" && currentFilter === "all" && !lightboxOpen;
+      const atRoot = currentSection === "prices" && currentFilter === "all" && !lightboxOpen;
       try { if (atRoot) tg.BackButton.hide(); else tg.BackButton.show(); } catch (_) {}
       try {
         const text = atRoot ? "Закрыть" : "Назад";
@@ -1171,7 +1171,7 @@
     function handleBackAction() {
       if (lightbox && lightbox.classList.contains("open")) { closeLightbox(); return; }
       if (currentFilter !== "all" && currentSection === "reviews") { setFilter("all"); return; }
-      if (currentSection !== "overview") { setSection("overview"); return; }
+      if (currentSection !== "prices") { setSection("prices"); return; }
       try { tg?.close?.(); } catch (_) {}
     }
     function initTelegramMiniApp() {
