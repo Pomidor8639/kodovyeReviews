@@ -965,6 +965,8 @@
       <button class="nav-btn" data-section="prices" type="button">Цены</button>
       <button class="nav-btn" data-section="reviews" type="button">Отзывы</button>
       <button class="nav-btn" data-section="support" type="button">Техподдержка</button>
+      <button class="nav-btn" data-section="policy" type="button">Политика</button>
+      <button class="nav-btn" data-section="agreement" type="button">Соглашение</button>
     </nav>
 
     <section class="section active" id="section-overview">
@@ -1023,6 +1025,23 @@
       </div>
     </section>
 
+    <section class="section" id="section-policy">
+      <h2>Политика конфиденциальности</h2>
+      <p>1) Обрабатываются только необходимые данные: Telegram ID, история заказов, статусы оплат и служебные логи.</p>
+      <p>2) Данные используются для выполнения заказов, поддержки, антифрода и стабильной работы сервиса.</p>
+      <p>3) Платежные реквизиты обрабатываются платежными провайдерами, бот не хранит чувствительные данные карт.</p>
+      <p>4) По вопросам удаления данных и обращений: @pomidor863x.</p>
+    </section>
+
+    <section class="section" id="section-agreement">
+      <h2>Пользовательское соглашение</h2>
+      <p>1) Оплата и использование сервиса означает согласие с условиями.</p>
+      <p>2) Товар цифровой: цена и доступность могут меняться до подтверждения покупки.</p>
+      <p>3) Услуга считается оказанной после передачи данных товара в боте.</p>
+      <p>4) При подтвержденной ошибке сервиса вопрос замены/возврата рассматривается поддержкой.</p>
+      <p>5) Если доступ или аккаунт слетел после передачи товара (действия поставщика, платформы, блокировки и т.д.), бесплатная замена не гарантируется.</p>
+    </section>
+
   </div>
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -1034,7 +1053,9 @@
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
     const sectionButtons = Array.from(document.querySelectorAll(".nav-btn"));
     const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
-    const APP_VERSION = new URLSearchParams(window.location.search).get("v") || "";
+    const urlParams = new URLSearchParams(window.location.search);
+    const APP_VERSION = urlParams.get("v") || "";
+    const SECTION_PARAM = String(urlParams.get("section") || "").trim().toLowerCase();
     let currentSection = "overview";
     let currentFilter = "all";
     let rows = [];
@@ -1120,6 +1141,11 @@
         section.classList.toggle("active", section.id === `section-${currentSection}`);
       });
       updateTelegramButtons();
+    }
+    function normalizeSection(name) {
+      const value = String(name || "").toLowerCase();
+      if (["overview", "prices", "reviews", "support", "policy", "agreement"].includes(value)) return value;
+      return "overview";
     }
     function setFilter(name) {
       currentFilter = name || "all";
@@ -1286,6 +1312,7 @@
     }
     initTelegramMiniApp();
     bindUI();
+    setSection(normalizeSection(SECTION_PARAM));
     fetchData();
     setInterval(fetchData, 30000);
   </script>
