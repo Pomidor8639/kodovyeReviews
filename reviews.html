@@ -481,6 +481,32 @@
       gap: 6px;
       min-width: 0;
     }
+    .meta-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .review-del {
+      border: 1px solid rgba(255, 122, 122, 0.42);
+      background: rgba(255, 122, 122, 0.12);
+      color: #ffd0d0;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .review-del:hover {
+      border-color: rgba(255, 122, 122, 0.72);
+      background: rgba(255, 122, 122, 0.22);
+    }
+    .review-del:disabled {
+      cursor: default;
+      opacity: 0.6;
+    }
     .product-chip {
       display: inline-flex;
       align-items: center;
@@ -1054,9 +1080,17 @@
     const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
     const urlParams = new URLSearchParams(window.location.search);
     const APP_VERSION = urlParams.get("v") || "";
+    const TOKEN = String(urlParams.get("token") || "").trim();
+    const API_BASE_RAW = String(urlParams.get("api") || "").trim();
+    const API_BASE_NORMALIZED = API_BASE_RAW.replace(/\/+$/g, "");
+    const API_BASE = (window.location.protocol === "https:" && API_BASE_NORMALIZED.toLowerCase().startsWith("http://"))
+      ? `https://${API_BASE_NORMALIZED.slice("http://".length)}`
+      : API_BASE_NORMALIZED;
     const SECTION_PARAM = String(urlParams.get("section") || "").trim().toLowerCase();
     let currentSection = "prices";
     let currentFilter = "all";
+    let isAdmin = false;
+    let reviewActionInFlight = false;
     let rows = [];
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
@@ -1083,6 +1117,23 @@
       const url = new URL(path, window.location.href);
       if (APP_VERSION) {
         url.searchParams.set("v", APP_VERSION);
+      }
+      return url.toString();
+    }
+    function hasRemoteApiAccess() {
+      return Boolean(API_BASE && TOKEN);
+    }
+    function buildApiUrl(path, params) {
+      const base = `${API_BASE}${String(path || "")}`;
+      const url = new URL(base);
+      if (params && typeof params === "object") {
+        Object.entries(params).forEach(([key, value]) => {
+          if (value === undefined || value === null || value === "") return;
+          url.searchParams.set(String(key), String(value));
+        });
+      }
+      if (TOKEN) {
+        url.searchParams.set("token", TOKEN);
       }
       return url.toString();
     }
@@ -1236,6 +1287,7 @@
         const extra = text ? `<div class="line3">${esc(text)}</div>` : "";
         const postUrl = String(row.post_url || "").trim();
         const photoUrl = String(row.photo_url || "").trim();
+        const source = String(row.source || "").trim().toLowerCase();
         const itemId = Number(row.purchase_id || 0);
         const productName = esc(normalizeProductName(row.product_name || "Товар"));
         const productCore = postUrl
@@ -1243,14 +1295,19 @@
           : `<span>${productName}</span>`;
         const idHtml = itemId > 0 ? `<span class="item-chip">#${itemId}</span>` : "";
         const postLink = postUrl ? `<a class="post-link" href="${esc(postUrl)}" target="_blank" rel="noopener">Пост в канале</a>` : "";
+        const canDelete = Boolean(isAdmin && hasRemoteApiAccess() && source === "internal" && itemId > 0);
+        const deleteButton = canDelete
+          ? `<button class="review-del" type="button" data-del-purchase="${itemId}">Удалить</button>`
+          : "";
         let media = "";
         if (photoUrl) {
           media = `<details class="media"><summary>Посмотреть скриншот</summary>${postLink}<a class="post-link" href="${esc(photoUrl)}" target="_blank" rel="noopener">Оригинал</a><img class="review-photo" loading="lazy" decoding="async" src="${esc(photoUrl)}" data-photo="${esc(photoUrl)}" alt="Скриншот к отзыву" /></details>`;
         } else if (postUrl) {
           media = `<details class="media"><summary>Открыть пост</summary>${postLink}</details>`;
         }
-        return `<div class="row"><div class="line1"><div>${esc(row.user_alias || "Пользователь")}</div><div>${esc(fmtDate(row.created_at))}</div></div><div class="line2"><div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div><div class="badge ${cls}">${esc(row.rating_label || rating)}</div></div>${extra}${media}</div>`;
+        return `<div class="row"><div class="line1"><div>${esc(row.user_alias || "Пользователь")}</div><div>${esc(fmtDate(row.created_at))}</div></div><div class="line2"><div class="meta-left"><span class="product-chip">${productCore}</span>${idHtml}</div><div class="meta-right"><div class="badge ${cls}">${esc(row.rating_label || rating)}</div>${deleteButton}</div></div>${extra}${media}</div>`;
       }).join("");
+
       const onImageFail = (img) => {
         if (!img) return;
         img.style.display = "none";
@@ -1261,6 +1318,7 @@
         note.textContent = "Скриншот временно недоступен. Открой пост по ссылке выше.";
         box.appendChild(note);
       };
+
       list.querySelectorAll("img.review-photo").forEach((img) => {
         img.addEventListener("error", () => {
           onImageFail(img);
@@ -1276,22 +1334,95 @@
           openLightbox(img.dataset.photo || img.getAttribute("src") || "");
         });
       });
+
+      bindDeleteButtons();
     }
+
+    async function deleteReview(purchaseId) {
+      if (reviewActionInFlight || !hasRemoteApiAccess()) return;
+      const pid = Number(purchaseId || 0);
+      if (!Number.isFinite(pid) || pid <= 0) return;
+      const status = document.getElementById("statusLine");
+      reviewActionInFlight = true;
+      status.textContent = `Удаляю отзыв #${pid}...`;
+      try {
+        const url = buildApiUrl("/reviews/action", { action: "delete_review", purchase_id: pid });
+        const response = await fetch(url, { method: "GET", cache: "no-store" });
+        let payload = {};
+        try {
+          payload = await response.json();
+        } catch (_) {}
+        if (!response.ok || !payload.ok) {
+          throw new Error(String(payload.error || `HTTP ${response.status}`));
+        }
+        hapticImpact();
+        status.textContent = String(payload.message || `Отзыв #${pid} удалён.`);
+        await fetchData();
+      } catch (err) {
+        status.textContent = `Не удалось удалить отзыв: ${err}`;
+      } finally {
+        reviewActionInFlight = false;
+      }
+    }
+
+    function bindDeleteButtons() {
+      const list = document.getElementById("reviewsList");
+      if (!list) return;
+      list.querySelectorAll("button.review-del[data-del-purchase]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const pid = Number(btn.dataset.delPurchase || 0);
+          if (!Number.isFinite(pid) || pid <= 0) return;
+          const ok = window.confirm(`Удалить отзыв по заказу #${pid}?`);
+          if (!ok) return;
+          btn.disabled = true;
+          const prev = btn.textContent;
+          btn.textContent = "Удаляю...";
+          try {
+            await deleteReview(pid);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = prev || "Удалить";
+          }
+        });
+      });
+    }
+
     async function fetchData() {
       const status = document.getElementById("statusLine");
       status.textContent = "Обновляю...";
+
+      const applyPayload = (payload) => {
+        rows = Array.isArray(payload.items) ? payload.items : [];
+        renderMetrics(payload.stats || {});
+        renderRows();
+      };
+
+      if (hasRemoteApiAccess()) {
+        try {
+          const response = await fetch(buildApiUrl("/reviews/data", { limit: 1000 }), { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const payload = await response.json();
+          isAdmin = Boolean(payload.is_admin);
+          applyPayload(payload);
+          status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
+          return;
+        } catch (_) {
+          isAdmin = false;
+        }
+      }
+
       try {
         const response = await fetch(assetUrl("./reviews.json"), { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const payload = await response.json();
-        rows = Array.isArray(payload.items) ? payload.items : [];
-        renderMetrics(payload.stats || {});
-        renderRows();
+        isAdmin = false;
+        applyPayload(payload);
         status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
-      } catch (err) {
+      } catch (_) {
         status.textContent = "Не удалось загрузить отзывы. Попробуй позже.";
       }
     }
+
     function bindUI() {
       sectionButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
