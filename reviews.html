@@ -1083,12 +1083,20 @@
     const TOKEN = String(urlParams.get("token") || "").trim();
     const API_BASE_RAW = String(urlParams.get("api") || "").trim();
     const API_BASE_NORMALIZED = API_BASE_RAW.replace(/\/+$/g, "");
-    const API_BASE = (window.location.protocol === "https:" && API_BASE_NORMALIZED.toLowerCase().startsWith("http://"))
-      ? `https://${API_BASE_NORMALIZED.slice("http://".length)}`
-      : API_BASE_NORMALIZED;
+    const API_BASES = (() => {
+      const values = [];
+      if (!API_BASE_NORMALIZED) return values;
+      const lower = API_BASE_NORMALIZED.toLowerCase();
+      if (window.location.protocol === "https:" && lower.startsWith("http://")) {
+        values.push(`https://${API_BASE_NORMALIZED.slice("http://".length)}`);
+      }
+      values.push(API_BASE_NORMALIZED);
+      return values.filter((value, index, arr) => value && arr.indexOf(value) === index);
+    })();
     const SECTION_PARAM = String(urlParams.get("section") || "").trim().toLowerCase();
     let currentSection = "prices";
     let currentFilter = "all";
+    let activeApiBase = API_BASES[0] || "";
     let isAdmin = false;
     let reviewActionInFlight = false;
     let rows = [];
@@ -1121,10 +1129,12 @@
       return url.toString();
     }
     function hasRemoteApiAccess() {
-      return Boolean(API_BASE && TOKEN);
+      return Boolean(API_BASES.length && TOKEN);
     }
-    function buildApiUrl(path, params) {
-      const base = `${API_BASE}${String(path || "")}`;
+    function buildApiUrl(path, params, baseOverride) {
+      const baseValue = String(baseOverride || activeApiBase || API_BASES[0] || "").trim();
+      if (!baseValue) return "";
+      const base = `${baseValue}${String(path || "")}`;
       const url = new URL(base);
       if (params && typeof params === "object") {
         Object.entries(params).forEach(([key, value]) => {
@@ -1346,17 +1356,37 @@
       reviewActionInFlight = true;
       status.textContent = `Удаляю отзыв #${pid}...`;
       try {
-        const url = buildApiUrl("/reviews/action", { action: "delete_review", purchase_id: pid });
-        const response = await fetch(url, { method: "GET", cache: "no-store" });
-        let payload = {};
-        try {
-          payload = await response.json();
-        } catch (_) {}
-        if (!response.ok || !payload.ok) {
-          throw new Error(String(payload.error || `HTTP ${response.status}`));
+        const candidateBases = [];
+        if (activeApiBase) candidateBases.push(activeApiBase);
+        API_BASES.forEach((base) => {
+          if (!candidateBases.includes(base)) candidateBases.push(base);
+        });
+        let deleted = false;
+        let lastError = null;
+        for (const base of candidateBases) {
+          try {
+            const url = buildApiUrl("/reviews/action", { action: "delete_review", purchase_id: pid }, base);
+            if (!url) continue;
+            const response = await fetch(url, { method: "GET", cache: "no-store" });
+            let payload = {};
+            try {
+              payload = await response.json();
+            } catch (_) {}
+            if (!response.ok || !payload.ok) {
+              throw new Error(String(payload.error || `HTTP ${response.status}`));
+            }
+            activeApiBase = base;
+            hapticImpact();
+            status.textContent = String(payload.message || `Отзыв #${pid} удалён.`);
+            deleted = true;
+            break;
+          } catch (err) {
+            lastError = err;
+          }
         }
-        hapticImpact();
-        status.textContent = String(payload.message || `Отзыв #${pid} удалён.`);
+        if (!deleted) {
+          throw lastError || new Error("api_unavailable");
+        }
         await fetchData();
       } catch (err) {
         status.textContent = `Не удалось удалить отзыв: ${err}`;
@@ -1398,17 +1428,19 @@
       };
 
       if (hasRemoteApiAccess()) {
-        try {
-          const response = await fetch(buildApiUrl("/reviews/data", { limit: 1000 }), { cache: "no-store" });
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const payload = await response.json();
-          isAdmin = Boolean(payload.is_admin);
-          applyPayload(payload);
-          status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
-          return;
-        } catch (_) {
-          isAdmin = false;
+        for (const base of API_BASES) {
+          try {
+            const response = await fetch(buildApiUrl("/reviews/data", { limit: 1000 }, base), { cache: "no-store" });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const payload = await response.json();
+            activeApiBase = base;
+            isAdmin = Boolean(payload.is_admin);
+            applyPayload(payload);
+            status.textContent = `Обновлено: ${fmtDate(payload.generated_at)} • Отзывов: ${rows.length}`;
+            return;
+          } catch (_) {}
         }
+        isAdmin = false;
       }
 
       try {
